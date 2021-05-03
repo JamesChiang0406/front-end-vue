@@ -4,7 +4,7 @@
       <router-link to="/">Home</router-link> |
       <router-link to="/about">About</router-link>
     </div>
-    <router-view/>
+    <router-view />
   </div>
 </template>
 
@@ -30,3 +30,12 @@
   color: #42b983;
 }
 </style>
+
+<script>
+import "bootstrap";
+import "bootstrap/dist/css/bootstrap.min.css";
+
+export default {
+  name: "App",
+};
+</script>
