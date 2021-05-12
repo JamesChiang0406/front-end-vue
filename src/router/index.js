@@ -3,10 +3,21 @@ import VueRouter from 'vue-router'
 import NotFound from '../views/NotFound.vue'
 import SignIn from '../views/SignIn.vue'
 import SignUp from '../views/SignUp.vue'
+import MainPage from '../views/MainPage.vue'
 
 Vue.use(VueRouter)
 
 const routes = [
+  {
+    path: '/',
+    name: 'root',
+    redirect: '/signin'
+  },
+  {
+    path: '/mainpage',
+    name: 'main-page',
+    component: MainPage
+  },
   {
     path: '/signup',
     name: 'sign-up',
