@@ -84,55 +84,6 @@
             </div>
           </div>
         </div>
-
-        <div
-          class="other-tweets d-flex py-2"
-          @click.stop.prevent="tweetPage(1)"
-        >
-          <div class="image-area pt-2" style="margin-right: 10px">
-            <img
-              src="../assets/icon/Icon.png"
-              alt=""
-              style="width: 40px; height: 40px"
-            />
-          </div>
-
-          <div class="tweets-area d-flex flex-wrap">
-            <div
-              class="profile d-flex justify-content-start align-items-center"
-            >
-              <span class="follower-name" style="margin-right: 10px"
-                >Apple</span
-              >
-              <span class="follower-account">@apple ‧ 3小時</span>
-            </div>
-
-            <div class="tweet" style="text-align: start">
-              <p class="m-0">
-                At vero eos et accusamus et iusto odio dignissimos ducimus qui
-                blanditiis praesentium voluptatum deleniti. i amdf aodfj
-                dlafjsf, sjfaf afjsdl asljaf aslfjl
-              </p>
-            </div>
-
-            <div class="icon-area d-flex justify-content-start">
-              <div class="comments" style="margin-right: 30px">
-                <router-link to="" style="margin-right: 10px">
-                  <img src="../assets/icon/reply_icon.svg" alt="comment-icon" />
-                </router-link>
-                <small>12</small>
-              </div>
-              <div class="likes">
-                <img
-                  src="../assets/icon/like_icon.svg"
-                  alt="like-icon"
-                  style="margin-right: 10px"
-                />
-                <small>76</small>
-              </div>
-            </div>
-          </div>
-        </div>
       </div>
 
       <div class="col-3 pr-0 pl-2">
@@ -165,6 +116,7 @@ export default {
 <style scoped>
 .container {
   width: 100%;
+  padding: 0;
 }
 
 .main-area {
