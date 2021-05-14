@@ -19,6 +19,11 @@ const routes = [
     component: MainPage
   },
   {
+    path: '/setting',
+    name: 'setting',
+    component: () => import('../views/Setting.vue')
+  },
+  {
     path: '/tweetpage/:id',
     name: 'tweet-page',
     component: () => import('../views/TweetPage.vue')

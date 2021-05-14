@@ -191,8 +191,6 @@ span {
 .numbers {
   font-size: 0.8rem;
 }
-.icon {
-}
 .name-account,
 .article,
 .publish-time,

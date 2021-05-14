@@ -8,7 +8,7 @@
       <div class="link-area mt-3">
         <div class="home-page">
           <img src="../assets/icon/home_icon.png" alt="" />
-          <router-link to="">首頁</router-link>
+          <router-link to="/mainpage">首頁</router-link>
         </div>
 
         <div class="profile">
@@ -18,7 +18,7 @@
 
         <div class="setting">
           <img src="../assets/icon/setting_icon.png" alt="" />
-          <router-link to="">設定</router-link>
+          <router-link to="/setting">設定</router-link>
         </div>
       </div>
 
@@ -71,7 +71,6 @@ button {
 }
 button:hover {
   color: white;
-  box-shadow: none;
 }
 
 .home-page,

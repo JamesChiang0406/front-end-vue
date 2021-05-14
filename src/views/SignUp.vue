@@ -73,7 +73,7 @@
         <button class="btn my-2 submit-btn" type="submit">註冊</button>
 
         <div>
-          <router-link to="/signin">取消</router-link>
+          <router-link to="/signin" style="font-weight: bold">取消</router-link>
         </div>
       </div>
     </form>
@@ -120,12 +120,6 @@ form {
   border-radius: 50px;
 }
 
-.buttons {
-  display: flex;
-  justify-content: flex-end;
-  font-weight: bolder;
-}
-
 span {
   font-weight: normal;
 }
@@ -155,7 +149,7 @@ input:focus {
 
 .title {
   font-weight: bolder;
-  font-size: 25px;
+  font-size: 1rem;
 }
 
 label {
