@@ -114,6 +114,12 @@ export default {
 </script>
 
 <style scoped>
+html {
+  position: relative;
+  z-index: -1;
+  background-color: black;
+}
+
 .container {
   width: 100%;
   padding: 0;
@@ -160,13 +166,9 @@ textarea:-moz-placeholder {
 textarea:focus {
   box-shadow: none;
 }
+textarea:focus:-moz-placeholder,
+textarea:focus:-ms-input-placeholder,
 textarea:focus::-webkit-input-placeholder {
-  color: transparent;
-}
-textarea:focus:-ms-input-placeholder {
-  color: transparent;
-}
-textarea:focus:-moz-placeholder {
   color: transparent;
 }
 button {
@@ -210,5 +212,22 @@ a:hover {
 }
 p {
   font-size: 15px;
+}
+
+.cancel-area {
+  border-bottom: 2px #e9e9e9 solid;
+  text-align: start;
+  color: #ff6600;
+}
+.fa-times:hover {
+  cursor: pointer;
+}
+.tweeting-area {
+  z-index: 999;
+  position: absolute;
+  border-radius: 15px;
+  border: 2px #e9e9e9 solid;
+  width: 450px;
+  height: 250px;
 }
 </style>
