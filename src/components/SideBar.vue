@@ -13,7 +13,7 @@
 
         <div class="profile">
           <img src="../assets/icon/user_icon.png" alt="" />
-          <router-link to="">個人資料</router-link>
+          <router-link to="/user/self">個人資料</router-link>
         </div>
 
         <div class="setting">

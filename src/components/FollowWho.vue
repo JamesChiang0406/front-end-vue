@@ -1,6 +1,6 @@
 <template>
   <div class="container py-2 px-0">
-    <div class="title text-start fw-bold">
+    <div class="title">
       <span>跟隨誰</span>
     </div>
 
@@ -53,6 +53,8 @@
 .title {
   border-bottom: 2px #e9e9e9 solid;
   padding-left: 10px;
+  text-align: start;
+  font-weight: bold;
 }
 
 .followers {
