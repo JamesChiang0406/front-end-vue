@@ -38,27 +38,33 @@
 
         <div class="other-tweets d-flex py-2">
           <div class="image-area pt-2" style="margin-right: 15px">
-            <img
-              src="../assets/icon/Icon.png"
-              alt="image"
-              style="width: 40px; height: 40px"
-            />
+            <router-link to="/user/1">
+              <img
+                src="../assets/icon/Icon.png"
+                alt="image"
+                style="width: 40px; height: 40px"
+              />
+            </router-link>
           </div>
 
-          <div
-            class="tweets-area d-flex flex-wrap"
-            @click.stop.prevent="tweetPage(1)"
-          >
+          <div class="tweets-area d-flex flex-wrap">
             <div
               class="profile d-flex justify-content-start align-items-center"
             >
-              <span class="follower-name" style="margin-right: 10px"
-                >Apple</span
-              >
+              <router-link to="/user/1">
+                <span class="follower-name" style="margin-right: 10px"
+                  >Apple</span
+                >
+              </router-link>
+
               <span class="follower-account">@apple ‧ 3小時</span>
             </div>
 
-            <div class="tweet" style="text-align: start">
+            <div
+              class="tweet"
+              style="text-align: start"
+              @click.stop.prevent="tweetPage(1)"
+            >
               <p class="m-0">
                 At vero eos et accusamus et iusto odio dignissimos ducimus qui
                 blanditiis praesentium voluptatum deleniti. i amdf aodfj
@@ -73,6 +79,7 @@
                 </router-link>
                 <small>12</small>
               </div>
+
               <div class="likes">
                 <img
                   src="../assets/icon/like_icon.svg"
@@ -220,5 +227,16 @@ p {
   border: 2px #e9e9e9 solid;
   width: 450px;
   height: 250px;
+}
+
+.follower-name:hover,
+.comments:hover,
+.likes:hover {
+  text-decoration-line: underline;
+  color: crimson;
+}
+
+.image-area:hover {
+  opacity: 0.5;
 }
 </style>
