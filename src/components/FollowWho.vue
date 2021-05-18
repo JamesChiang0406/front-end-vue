@@ -9,7 +9,7 @@
     >
       <div class="follower-profile d-flex">
         <div class="follower-pic">
-          <img src="../assets/icon/Icon.png" alt="" />
+          <img src="../assets/icon/Icon.png" alt="follower-pic" />
         </div>
 
         <div class="name-account d-flex justify-content-center flex-wrap">
@@ -26,7 +26,7 @@
     >
       <div class="follower-profile d-flex">
         <div class="follower-pic">
-          <img src="../assets/icon/Icon.png" alt="" />
+          <img src="../assets/icon/Icon.png" alt="follower-pic" />
         </div>
 
         <div class="name-account d-flex justify-content-center flex-wrap">

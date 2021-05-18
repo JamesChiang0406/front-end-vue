@@ -60,12 +60,12 @@
             <div class="icon d-flex justify-content-start p-2">
               <img
                 src="../assets/icon/reply_icon.svg"
-                alt=""
+                alt="reply-icon"
                 style="width: 25px; height: 25px; margin-right: 110px"
               />
               <img
                 src="../assets/icon/like_icon.svg"
-                alt=""
+                alt="like-icon"
                 style="width: 25px; height: 25px"
               />
             </div>
@@ -76,7 +76,7 @@
           <div class="image-area pt-2" style="margin-right: 10px">
             <img
               src="../assets/icon/Icon.png"
-              alt=""
+              alt="icon"
               style="width: 40px; height: 40px"
             />
           </div>
@@ -106,7 +106,7 @@
           <div class="image-area pt-2" style="margin-right: 10px">
             <img
               src="../assets/icon/Icon.png"
-              alt=""
+              alt="icon"
               style="width: 40px; height: 40px"
             />
           </div>

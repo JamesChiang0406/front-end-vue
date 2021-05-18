@@ -36,19 +36,19 @@
           </form>
         </div>
 
-        <div
-          class="other-tweets d-flex py-2"
-          @click.stop.prevent="tweetPage(1)"
-        >
-          <div class="image-area pt-2" style="margin-right: 10px">
+        <div class="other-tweets d-flex py-2">
+          <div class="image-area pt-2" style="margin-right: 15px">
             <img
               src="../assets/icon/Icon.png"
-              alt=""
+              alt="image"
               style="width: 40px; height: 40px"
             />
           </div>
 
-          <div class="tweets-area d-flex flex-wrap">
+          <div
+            class="tweets-area d-flex flex-wrap"
+            @click.stop.prevent="tweetPage(1)"
+          >
             <div
               class="profile d-flex justify-content-start align-items-center"
             >
@@ -102,6 +102,7 @@ export default {
     SideBar,
     FollowWho,
   },
+
   methods: {
     tweetPage(id) {
       this.$router.push({
@@ -148,16 +149,8 @@ textarea {
   border: none;
   overflow: hidden;
 }
-textarea::-webkit-input-placeholder {
-  font-size: 20px;
-  font-weight: bold;
-  color: rgb(197, 195, 195);
-}
-textarea:-ms-input-placeholder {
-  font-size: 20px;
-  font-weight: bold;
-  color: rgb(197, 195, 195);
-}
+textarea::-webkit-input-placeholder,
+textarea:-ms-input-placeholder,
 textarea:-moz-placeholder {
   font-size: 20px;
   font-weight: bold;
@@ -166,9 +159,7 @@ textarea:-moz-placeholder {
 textarea:focus {
   box-shadow: none;
 }
-textarea:focus:-moz-placeholder,
-textarea:focus:-ms-input-placeholder,
-textarea:focus::-webkit-input-placeholder {
+textarea:focus::placeholder {
   color: transparent;
 }
 button {

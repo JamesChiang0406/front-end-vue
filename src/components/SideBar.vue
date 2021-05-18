@@ -2,22 +2,22 @@
   <div class="container d-flex flex-column">
     <div class="d-flex flex-column justify-content-start">
       <div class="title d-flex justify-content-start">
-        <img src="../assets/icon/Icon.png" alt="" />
+        <img src="../assets/icon/Icon.png" alt="title" />
       </div>
 
       <div class="link-area mt-3">
         <div class="home-page">
-          <img src="../assets/icon/home_icon.png" alt="" />
+          <img src="../assets/icon/home_icon.png" alt="home-page" />
           <router-link to="/mainpage">首頁</router-link>
         </div>
 
         <div class="profile">
-          <img src="../assets/icon/user_icon.png" alt="" />
+          <img src="../assets/icon/user_icon.png" alt="profile" />
           <router-link to="/user/self">個人資料</router-link>
         </div>
 
         <div class="setting">
-          <img src="../assets/icon/setting_icon.png" alt="" />
+          <img src="../assets/icon/setting_icon.png" alt="setting" />
           <router-link to="/setting">設定</router-link>
         </div>
       </div>
@@ -28,7 +28,7 @@
     </div>
 
     <div class="logout-area">
-      <img src="../assets/icon/logout_icon.png" alt="" />
+      <img src="../assets/icon/logout_icon.png" alt="logout" />
       <router-link to="">登出</router-link>
     </div>
   </div>
