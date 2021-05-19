@@ -6,7 +6,7 @@
 
     <form class="signin-area" @submit.stop.prevent="handleSubmit">
       <div class="my-2 title">
-        <p>登入 Alphitter</p>
+        <p>後台登入</p>
       </div>
 
       <!-- account -->
@@ -37,9 +37,7 @@
         <button class="btn my-2 submit-btn" type="submit">登入</button>
 
         <div class="buttons mt-3">
-          <router-link to="/signup">註冊 Alphitter </router-link>
-          <span class="text-primary mx-2"> ‧ </span>
-          <router-link to="/admin"> 後台登入</router-link>
+          <router-link to="/signin"> 前台登入</router-link>
         </div>
       </div>
     </form>
@@ -114,7 +112,7 @@ input:focus {
 }
 
 .title {
-  font-weight: bolder;
+  font-weight: bold;
 }
 
 label {

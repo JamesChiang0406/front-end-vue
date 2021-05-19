@@ -9,7 +9,9 @@
     >
       <div class="follower-profile d-flex">
         <div class="follower-pic">
-          <img src="../assets/icon/Icon.png" alt="follower-pic" />
+          <router-link to="/user/1">
+            <img src="../assets/icon/Icon.png" alt="follower-pic" />
+          </router-link>
         </div>
 
         <div class="name-account d-flex justify-content-center flex-wrap">
@@ -26,7 +28,9 @@
     >
       <div class="follower-profile d-flex">
         <div class="follower-pic">
-          <img src="../assets/icon/Icon.png" alt="follower-pic" />
+          <router-link to="/user/1">
+            <img src="../assets/icon/Icon.png" alt="follower-pic" />
+          </router-link>
         </div>
 
         <div class="name-account d-flex justify-content-center flex-wrap">
@@ -98,5 +102,9 @@ img {
   font-size: 16px;
   font-weight: bold;
   padding-bottom: 0;
+}
+
+.follower-pic:hover {
+  opacity: 0.5;
 }
 </style>
