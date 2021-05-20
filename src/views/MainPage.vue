@@ -61,7 +61,7 @@
             </div>
 
             <div
-              class="tweet"
+              class="tweet-text"
               style="text-align: start"
               @click.stop.prevent="tweetPage(1)"
             >
@@ -188,7 +188,7 @@ button {
   background-color: #f5f8fa;
 }
 .profile,
-.tweet,
+.tweet-text,
 .icon-area {
   width: 100%;
 }
