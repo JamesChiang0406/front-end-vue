@@ -13,7 +13,7 @@
 
         <div class="users-list mb-2">
           <img src="../assets/icon/user_icon.png" alt="user-icon" />
-          <router-link to="">使用者列表</router-link>
+          <router-link to="/admin_users">使用者列表</router-link>
         </div>
       </div>
 

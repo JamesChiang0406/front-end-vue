@@ -15,16 +15,19 @@
 
         <div class="tweet-area d-flex flex-column">
           <div class="tweeter-profile d-flex px-3 my-2">
-            <img
-              src="../assets/icon/Icon.png"
-              alt="avatar-img"
-              style="
-                width: 40px;
-                height: 40px;
-                margin-top: 5px;
-                margin-right: 10px;
-              "
-            />
+            <router-link to="/user/1">
+              <img
+                src="../assets/icon/Icon.png"
+                alt="avatar-img"
+                style="
+                  width: 40px;
+                  height: 40px;
+                  margin-top: 5px;
+                  margin-right: 10px;
+                "
+                class="image-area"
+              />
+            </router-link>
 
             <div class="name-account d-flex justify-content-center flex-column">
               <span class="follower-name fw-bold">Mr Denny's</span>
@@ -74,11 +77,13 @@
 
         <div class="replys d-flex py-2 px-3">
           <div class="image-area pt-2" style="margin-right: 10px">
-            <img
-              src="../assets/icon/Icon.png"
-              alt="icon"
-              style="width: 40px; height: 40px"
-            />
+            <router-link to="/user/1">
+              <img
+                src="../assets/icon/Icon.png"
+                alt="icon"
+                style="width: 40px; height: 40px"
+              />
+            </router-link>
           </div>
 
           <div class="text-area d-flex flex-column flex-wrap">
@@ -93,7 +98,9 @@
 
             <div class="reply-to">
               <span style="font-size: 15px; margin-right: 3px">回覆</span>
-              <router-link to="" style="font-size: 15px">@apple</router-link>
+              <router-link to="/user/1" style="font-size: 15px"
+                >@apple</router-link
+              >
             </div>
 
             <div class="tweet">
@@ -104,11 +111,13 @@
 
         <div class="replys d-flex py-2 px-3">
           <div class="image-area pt-2" style="margin-right: 10px">
-            <img
-              src="../assets/icon/Icon.png"
-              alt="icon"
-              style="width: 40px; height: 40px"
-            />
+            <router-link to="/user/1">
+              <img
+                src="../assets/icon/Icon.png"
+                alt="icon"
+                style="width: 40px; height: 40px"
+              />
+            </router-link>
           </div>
 
           <div class="text-area d-flex flex-column flex-wrap">
@@ -123,7 +132,9 @@
 
             <div class="reply-to">
               <span style="font-size: 15px; margin-right: 3px">回覆</span>
-              <router-link to="" style="font-size: 15px">@apple</router-link>
+              <router-link to="/user/1" style="font-size: 15px"
+                >@apple</router-link
+              >
             </div>
 
             <div class="tweet">
@@ -191,6 +202,10 @@ span {
 .numbers {
   font-size: 0.8rem;
 }
+.image-area:hover {
+  opacity: 0.5;
+}
+
 .name-account,
 .article,
 .publish-time,

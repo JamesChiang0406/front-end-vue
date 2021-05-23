@@ -1,11 +1,11 @@
 <template>
   <div class="container mr-0">
     <div class="row">
-      <div class="col-3 p-0">
+      <div class="col-2 p-0">
         <AdminSideBar />
       </div>
 
-      <div class="tweets-list col-9 p-0">
+      <div class="tweets-list col-10 p-0">
         <div class="title">
           <span>推文清單</span>
         </div>

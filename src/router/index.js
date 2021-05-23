@@ -69,6 +69,11 @@ const routes = [
     component: () => import('../views/AdminMain.vue')
   },
   {
+    path: '/admin_users',
+    name: 'admin-users',
+    component: () => import('../views/AdminUsers.vue')
+  },
+  {
     path: '*',
     name: 'not-found',
     component: NotFound
