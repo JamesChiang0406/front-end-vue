@@ -7,39 +7,49 @@
     <div
       class="followers d-flex justify-content-between align-items-center p-2"
     >
-      <div class="follower-profile d-flex">
-        <div class="follower-pic">
+      <div class="follower-profile d-flex" style="width: 75%">
+        <div class="follower-pic" style="width: 20%">
           <router-link to="/user/1">
             <img src="../assets/icon/Icon.png" alt="follower-pic" />
           </router-link>
         </div>
 
-        <div class="name-account d-flex justify-content-center flex-wrap">
+        <div
+          class="name-account d-flex justify-content-start flex-wrap"
+          style="width: 80%"
+        >
           <span class="follower-name fw-bold">Mr Denny's</span>
           <small class="follower-account">@mrdennys</small>
         </div>
       </div>
 
-      <button class="btn follow-btn">跟隨</button>
+      <div style="width: 25%">
+        <button class="btn follow-btn">跟隨</button>
+      </div>
     </div>
 
     <div
       class="followers d-flex justify-content-between align-items-center p-2"
     >
-      <div class="follower-profile d-flex">
-        <div class="follower-pic">
+      <div class="follower-profile d-flex" style="width: 75%">
+        <div class="follower-pic" style="width: 20%">
           <router-link to="/user/1">
             <img src="../assets/icon/Icon.png" alt="follower-pic" />
           </router-link>
         </div>
 
-        <div class="name-account d-flex justify-content-center flex-wrap">
+        <div
+          class="name-account d-flex justify-content-start flex-wrap"
+          style="width: 80%"
+        >
           <span class="follower-name fw-bold">Mr Denny's</span>
           <small class="follower-account">@mrdennys</small>
         </div>
       </div>
 
-      <button class="btn follow-btn">跟隨</button>
+      <div style="width: 25%">
+        <button class="btn follow-btn">跟隨</button>
+      </div>
     </div>
 
     <div class="show-more">
@@ -71,13 +81,15 @@ img {
   height: 40px;
 }
 .name-account {
+  text-align: start;
   position: relative;
-  padding-left: 15px;
+  padding-left: 12px;
 }
 .follower-account {
   color: darkgray;
   position: absolute;
-  top: 18px;
+  top: 15px;
+  left: 10px;
 }
 .follower-account,
 .follower-name {
@@ -88,10 +100,10 @@ img {
   border-radius: 50px;
   color: #ff6600;
   border-color: #ff6600;
-  width: 70px;
-  height: 35px;
+  width: 100%;
+  height: 100%;
   font-size: 0.9rem;
-  padding: 5px;
+  padding: 5px 2px 2px 2px;
 }
 
 .show-more {

@@ -10,26 +10,31 @@
           <span>首頁</span>
         </div>
 
-        <div class="tweet-area d-flex">
-          <form class="tweet-form d-flex justify-content-between">
+        <div class="tweet-area pt-1 d-flex" style="width: 100%">
+          <form
+            class="tweet-form d-flex justify-content-between"
+            style="width: 100%"
+          >
             <div
               class="message-area d-flex justify-content-center align-items-start"
+              style="width: 85%; padding-left: 5px"
             >
               <img
                 src="../assets/icon/Icon.png"
                 alt="avatar-img"
-                style="width: 40px; height: 40px; margin-top: 3px"
+                style="width: 40px; height: 40px; margin-top: 5px"
               />
               <textarea
                 class="form-control"
                 placeholder="有什麼新鮮事?"
-                style="height: 125px; width: 425px"
+                style="height: 125px; width: 90%"
               >
               </textarea>
             </div>
 
             <div
               class="tweet-button d-flex justify-content-center align-items-end"
+              style="width: 15%"
             >
               <button class="btn text-white mb-2" type="submit">推文</button>
             </div>
@@ -81,11 +86,9 @@
               </div>
 
               <div class="likes">
-                <img
-                  src="../assets/icon/like_icon.svg"
-                  alt="like-icon"
-                  style="margin-right: 10px"
-                />
+                <router-link to="" style="margin-right: 10px">
+                  <img src="../assets/icon/like_icon.svg" alt="like-icon" />
+                </router-link>
                 <small>76</small>
               </div>
             </div>
@@ -97,17 +100,23 @@
         <FollowWho />
       </div>
     </div>
+
+    <div class="tweeting-area">
+      <TweetingForm />
+    </div>
   </div>
 </template>
 
 <script>
 import SideBar from "../components/SideBar";
 import FollowWho from "../components/FollowWho";
+import TweetingForm from "../components/TweetingForm";
 
 export default {
   components: {
     SideBar,
     FollowWho,
+    TweetingForm,
   },
 
   methods: {
@@ -122,10 +131,9 @@ export default {
 </script>
 
 <style scoped>
-html {
+body {
   position: relative;
-  z-index: -1;
-  background-color: black;
+  z-index: 1;
 }
 
 .container {
@@ -146,10 +154,6 @@ html {
 
 .tweet-area {
   border-bottom: 10px #e9e9e9 solid;
-  padding: 10px 15px 0 15px;
-}
-.tweet-form {
-  width: 100%;
 }
 textarea {
   resize: none;
@@ -217,16 +221,15 @@ p {
   text-align: start;
   color: #ff6600;
 }
-.fa-times:hover {
-  cursor: pointer;
-}
 .tweeting-area {
+  display: none;
+  width: 100%;
+  height: 100%;
   z-index: 999;
   position: absolute;
-  border-radius: 15px;
-  border: 2px #e9e9e9 solid;
-  width: 450px;
-  height: 250px;
+  top: 0;
+  left: 0;
+  background: rgba(0, 0, 0, 0.5);
 }
 
 .follower-name:hover,
