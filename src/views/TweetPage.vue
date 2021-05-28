@@ -151,22 +151,32 @@
         <FollowWho />
       </div>
     </div>
+
+    <div class="replying-area">
+      <ReplyingForm />
+    </div>
   </div>
 </template>
 
 <script>
 import SideBar from "../components/SideBar";
 import FollowWho from "../components/FollowWho";
+import ReplyingForm from "../components/ReplyingForm";
 
 export default {
   components: {
     SideBar,
     FollowWho,
+    ReplyingForm,
   },
 };
 </script>
 
 <style scoped>
+body {
+  z-index: 1;
+  position: relative;
+}
 span {
   font-weight: bold;
 }
@@ -204,6 +214,17 @@ span {
 }
 .image-area:hover {
   opacity: 0.5;
+}
+
+.replying-area {
+  display: none;
+  z-index: 999;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
 }
 
 .name-account,
