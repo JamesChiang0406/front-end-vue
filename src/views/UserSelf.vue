@@ -132,17 +132,23 @@
         <FollowWho />
       </div>
     </div>
+
+    <div class="editing-area">
+      <ProfileEditPage />
+    </div>
   </div>
 </template>
 
 <script>
 import SideBar from "../components/SideBar";
 import FollowWho from "../components/FollowWho";
+import ProfileEditPage from "../components/ProfileEditPage";
 
 export default {
   components: {
     SideBar,
     FollowWho,
+    ProfileEditPage,
   },
 
   methods: {
@@ -157,6 +163,11 @@ export default {
 </script>
 
 <style scoped>
+body {
+  z-index: 1;
+  position: relative;
+}
+
 .title {
   text-align: start;
   position: relative;
@@ -264,5 +275,18 @@ a,
 
 .image-area:hover {
   opacity: 0.5;
+}
+
+.editing-area {
+  display: none;
+  position: absolute;
+  z-index: 999;
+  margin: 0;
+  padding: 0;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
 }
 </style>
