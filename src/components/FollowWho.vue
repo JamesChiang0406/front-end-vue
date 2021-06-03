@@ -23,8 +23,9 @@
         </div>
       </div>
 
-      <div style="width: 25%">
+      <div style="width: 25%" class="">
         <button class="btn follow-btn">跟隨</button>
+        <button class="btn following-btn">正在跟隨</button>
       </div>
     </div>
 
@@ -97,12 +98,23 @@ img {
 }
 
 .follow-btn {
-  border-radius: 50px;
+  border-radius: 20px;
   color: #ff6600;
   border-color: #ff6600;
   width: 100%;
   height: 100%;
   font-size: 0.9rem;
+  padding: 5px 2px 2px 2px;
+}
+.following-btn {
+  display: none;
+  border-radius: 20px;
+  color: white;
+  background-color: #ff6600;
+  border-color: #ff6600;
+  width: 100%;
+  height: 100%;
+  font-size: 0.65rem;
   padding: 5px 2px 2px 2px;
 }
 
@@ -114,6 +126,7 @@ img {
   font-size: 16px;
   font-weight: bold;
   padding-bottom: 0;
+  box-shadow: none;
 }
 
 .follower-pic:hover {

@@ -7,18 +7,54 @@
 
       <div class="link-area mt-3">
         <div class="home-page">
-          <img src="../assets/icon/home_icon.png" alt="home-page" />
-          <router-link to="/mainpage">首頁</router-link>
+          <img
+            v-if="homeIsClicked"
+            src="../assets/icon/home_icon_active.png"
+            alt="home-page"
+          />
+          <img v-else src="../assets/icon/home_icon.png" alt="home-page" />
+
+          <router-link
+            v-if="homeIsClicked"
+            to="/mainpage"
+            style="color: #ff6600"
+            >首頁</router-link
+          >
+          <router-link v-else to="/mainpage">首頁</router-link>
         </div>
 
         <div class="profile">
-          <img src="../assets/icon/user_icon.png" alt="profile" />
-          <router-link to="/user/self">個人資料</router-link>
+          <img
+            v-if="profileIsClicked"
+            src="../assets/icon/user_icon_active.png"
+            alt="profile"
+          />
+          <img v-else src="../assets/icon/user_icon.png" alt="profile" />
+
+          <router-link
+            v-if="profileIsClicked"
+            to="/user/self"
+            style="color: #ff6600"
+            >個人資料</router-link
+          >
+          <router-link v-else to="/user/self">個人資料</router-link>
         </div>
 
         <div class="setting">
-          <img src="../assets/icon/setting_icon.png" alt="setting" />
-          <router-link to="/setting">設定</router-link>
+          <img
+            v-if="settingIsClicked"
+            src="../assets/icon/setting_icon_active.png"
+            alt="setting"
+          />
+          <img v-else src="../assets/icon/setting_icon.png" alt="setting" />
+
+          <router-link
+            v-if="settingIsClicked"
+            to="/setting"
+            style="color: #ff6600"
+            >設定</router-link
+          >
+          <router-link v-else to="/setting">設定</router-link>
         </div>
       </div>
 
@@ -33,6 +69,18 @@
     </div>
   </div>
 </template>
+
+<script>
+export default {
+  data() {
+    return {
+      homeIsClicked: false,
+      profileIsClicked: false,
+      settingIsClicked: false,
+    };
+  },
+};
+</script>
 
 <style scoped>
 .container {

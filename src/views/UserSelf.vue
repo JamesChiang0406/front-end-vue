@@ -25,7 +25,12 @@
             <img
               src="../assets/icon/Desert.jpg"
               alt="user-pic"
-              style="width: 100%; height: 200px"
+              style="
+                width: 100%;
+                height: 250px;
+                background-size: cover;
+                background-position: center;
+              "
             />
 
             <div class="edit-area d-flex justify-content-between px-3">
@@ -117,11 +122,18 @@
 
               <div class="likes">
                 <img
+                  v-if="isLiked"
+                  src="../assets/icon/like_icon_active.svg"
+                  alt="like-icon"
+                  style="margin-right: 10px; width: 13px; height: 13px"
+                />
+                <img
+                  v-else
                   src="../assets/icon/like_icon.svg"
                   alt="like-icon"
                   style="margin-right: 10px"
                 />
-                <small>76</small>
+                <small :class="{ isActived: isLiked }">76</small>
               </div>
             </div>
           </div>
@@ -149,6 +161,13 @@ export default {
     SideBar,
     FollowWho,
     ProfileEditPage,
+  },
+
+  data() {
+    return {
+      id: 2,
+      isLiked: false,
+    };
   },
 
   methods: {
@@ -193,7 +212,7 @@ body {
 }
 .edit-btn {
   padding: 2px;
-  margin-top: 10%;
+  margin-top: 12%;
   width: 130px;
   height: 40px;
   font-size: 15px;
@@ -268,7 +287,8 @@ a,
 
 .follower-name:hover,
 .comments:hover,
-.likes:hover {
+.likes:hover,
+.isActived {
   text-decoration-line: underline;
   color: crimson;
 }

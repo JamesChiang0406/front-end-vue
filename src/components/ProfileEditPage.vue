@@ -153,4 +153,8 @@ small {
   border-radius: 1px;
   border-bottom: 1px black solid;
 }
+
+svg:hover {
+  cursor: pointer;
+}
 </style>

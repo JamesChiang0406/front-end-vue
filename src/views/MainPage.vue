@@ -104,6 +104,10 @@
     <div class="tweeting-area">
       <TweetingForm />
     </div>
+
+    <div class="replying-area">
+      <ReplyingForm />
+    </div>
   </div>
 </template>
 
@@ -111,12 +115,14 @@
 import SideBar from "../components/SideBar";
 import FollowWho from "../components/FollowWho";
 import TweetingForm from "../components/TweetingForm";
+import ReplyingForm from "../components/ReplyingForm";
 
 export default {
   components: {
     SideBar,
     FollowWho,
     TweetingForm,
+    ReplyingForm,
   },
 
   methods: {
@@ -221,6 +227,7 @@ p {
   text-align: start;
   color: #ff6600;
 }
+
 .tweeting-area {
   display: none;
   width: 100%;
@@ -229,6 +236,16 @@ p {
   position: absolute;
   top: 0;
   left: 0;
+  background: rgba(0, 0, 0, 0.5);
+}
+.replying-area {
+  display: none;
+  z-index: 999;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   background: rgba(0, 0, 0, 0.5);
 }
 

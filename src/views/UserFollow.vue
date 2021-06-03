@@ -50,6 +50,7 @@
               </div>
 
               <button class="follow-btn btn">跟隨</button>
+              <button class="following-btn btn">正在跟隨</button>
             </div>
 
             <p class="member-description m-0" style="font-size: 0.8rem">
@@ -79,6 +80,7 @@
               </div>
 
               <button class="follow-btn btn">跟隨</button>
+              <button class="following-btn btn">正在跟隨</button>
             </div>
 
             <p class="member-description m-0" style="font-size: 0.8rem">
@@ -155,5 +157,16 @@ export default {
   border-radius: 50px;
   font-size: 0.9rem;
   padding: 5px;
+}
+.following-btn {
+  display: none;
+  border-radius: 20px;
+  color: white;
+  background-color: #ff6600;
+  border-color: #ff6600;
+  width: 80px;
+  height: 100%;
+  font-size: 0.7rem;
+  padding: 5px 2px 2px 2px;
 }
 </style>
