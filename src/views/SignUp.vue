@@ -18,6 +18,7 @@
           v-model="account"
           name="account"
           id="account"
+          required
         />
       </div>
 
@@ -30,6 +31,7 @@
           v-model="name"
           name="name"
           id="name"
+          required
         />
       </div>
 
@@ -37,11 +39,12 @@
       <div class="form-label-group mb-2">
         <label for="email">Email</label>
         <input
-          type="text"
+          type="email"
           class="form-control mt-3"
           v-model="email"
           name="email"
           id="email"
+          required
         />
       </div>
 
@@ -54,6 +57,7 @@
           v-model="password"
           name="password"
           id="password"
+          required
         />
       </div>
 
@@ -61,16 +65,23 @@
       <div class="form-label-group mb-3">
         <label for="passwordCheck">密碼確認</label>
         <input
-          type="text"
+          type="password"
           class="form-control mt-3"
           v-model="passwordCheck"
           name="passwordCheck"
           id="passwordCheck"
+          required
         />
       </div>
 
       <div class="btn-wrapper">
-        <button class="btn my-2 submit-btn" type="submit">註冊</button>
+        <button
+          class="btn my-2 submit-btn"
+          type="submit"
+          :disabled="isProcessing"
+        >
+          {{ isProcessing ? "處理中..." : "註冊" }}
+        </button>
 
         <div>
           <router-link to="/signin" style="font-weight: bold">取消</router-link>
@@ -81,6 +92,9 @@
 </template>
 
 <script>
+import { Toast } from "../utils/helpers";
+import userAPI from "../apis/users";
+
 export default {
   data() {
     return {
@@ -89,20 +103,40 @@ export default {
       email: "",
       password: "",
       passwordCheck: "",
+      isProcessing: false,
     };
   },
 
   methods: {
-    handleSubmit() {
-      const data = JSON.stringify({
-        account: this.account,
-        name: this.name,
-        email: this.email,
-        password: this.password,
-        passwordCheck: this.passwordCheck,
-      });
+    async handleSubmit() {
+      try {
+        this.isProcessing = true;
+        const formData = {
+          account: this.account,
+          name: this.name,
+          email: this.email,
+          password: this.password,
+          passwordCheck: this.passwordCheck,
+        };
+        const { data } = await userAPI.create({ formData });
 
-      console.log(data);
+        if (data.status !== "success") {
+          throw new Error(data.message);
+        }
+
+        Toast.fire({
+          icon: "success",
+          title: "創立成功，返回登入頁面！",
+        });
+        this.$router.push({ name: "sign-in" });
+      } catch (error) {
+        console.log(error.message);
+        this.isProcessing = false;
+        Toast.fire({
+          icon: "error",
+          title: "無法建立帳號，請稍後再試！",
+        });
+      }
     },
   },
 };
