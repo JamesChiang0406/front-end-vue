@@ -111,16 +111,19 @@ export default {
     async handleSubmit() {
       try {
         this.isProcessing = true;
-        const formData = {
+        const { data } = await userAPI.create({
           account: this.account,
           name: this.name,
           email: this.email,
           password: this.password,
           passwordCheck: this.passwordCheck,
-        };
-        const { data } = await userAPI.create({ formData });
+        });
+
+        console.log(data);
 
         if (data.status !== "success") {
+          const a = Error(data.message);
+          console.log(a);
           throw new Error(data.message);
         }
 
@@ -130,7 +133,7 @@ export default {
         });
         this.$router.push({ name: "sign-in" });
       } catch (error) {
-        console.log(error.message);
+        console.log(error);
         this.isProcessing = false;
         Toast.fire({
           icon: "error",
