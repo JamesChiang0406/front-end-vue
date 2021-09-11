@@ -110,6 +110,19 @@ export default {
   methods: {
     async handleSubmit() {
       try {
+        if (
+          !this.account ||
+          !this.name ||
+          !this.email ||
+          !this.password ||
+          !this.passwordCheck
+        ) {
+          return Toast.fire({
+            icon: "error",
+            title: "尚有欄位未填寫，請重新確認！",
+          });
+        }
+
         this.isProcessing = true;
         const { data } = await userAPI.create({
           account: this.account,
@@ -119,21 +132,17 @@ export default {
           passwordCheck: this.passwordCheck,
         });
 
-        console.log(data);
-
         if (data.status !== "success") {
-          const a = Error(data.message);
-          console.log(a);
           throw new Error(data.message);
         }
 
         Toast.fire({
           icon: "success",
           title: "創立成功，返回登入頁面！",
+          closeButtonHtml: true,
         });
         this.$router.push({ name: "sign-in" });
       } catch (error) {
-        console.log(error);
         this.isProcessing = false;
         Toast.fire({
           icon: "error",

@@ -18,6 +18,7 @@
           v-model="account"
           name="account"
           id="account"
+          required
         />
       </div>
 
@@ -30,11 +31,18 @@
           v-model="password"
           name="password"
           id="password"
+          required
         />
       </div>
 
       <div class="btn-wrapper">
-        <button class="btn my-2 submit-btn" type="submit">登入</button>
+        <button
+          class="btn my-2 submit-btn"
+          type="submit"
+          :disabled="isProcessing"
+        >
+          登入
+        </button>
 
         <div class="buttons mt-3">
           <router-link to="/signup">註冊 Alphitter </router-link>
@@ -47,22 +55,49 @@
 </template>
 
 <script>
+import authApi from "../apis/auth";
+import { Toast } from "../utils/helpers";
+
 export default {
   data() {
     return {
       account: "",
       password: "",
+      isProcessing: false,
     };
   },
 
   methods: {
-    handleSubmit() {
-      const data = JSON.stringify({
-        account: this.account,
-        password: this.password,
-      });
+    async handleSubmit() {
+      try {
+        // 錯誤處理
+        if (!this.account || !this.password) {
+          return Toast.fire({
+            icon: "error",
+            title: "帳號或密碼未輸入，請重新確認！",
+          });
+        }
 
-      console.log(data);
+        this.isProcessing = true;
+        const { data } = await authApi.signIn({
+          account: this.account,
+          password: this.password,
+        });
+
+        if (data.status !== "success") {
+          throw new Error(data.message);
+        }
+
+        localStorage.setItem("token", data.token);
+        this.$router.push({ name: "main-page" });
+      } catch (error) {
+        this.password = "";
+        this.isProcessing = false;
+        Toast.fire({
+          icon: "error",
+          title: "帳號或密碼有誤，請重新確認！",
+        });
+      }
     },
   },
 };
