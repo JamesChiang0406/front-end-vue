@@ -34,7 +34,7 @@ const routes = [
     component: () => import('../views/UserFollow.vue')
   },
   {
-    path: '/user/:id',
+    path: '/users/:id',
     name: 'other-user',
     component: () => import('../views/UserSelf.vue')
   },

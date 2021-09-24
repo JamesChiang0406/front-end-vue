@@ -1,7 +1,7 @@
 <template>
   <div class="container mr-0">
     <div class="row">
-      <div class="col-2 p-0">
+      <div class="col-2 p-0" style="height: 350px">
         <AdminSideBar />
       </div>
 
@@ -10,11 +10,13 @@
           <span>推文清單</span>
         </div>
 
-        <div class="tweets d-flex p-2">
+        <div class="tweets d-flex p-2" v-for="tweet in tweets" :key="tweet.id">
           <div class="tweeter-pic pt-2 mr-2">
-            <router-link to="/user/1">
+            <router-link
+              :to="{ name: 'other-user', params: { id: tweet.UserId } }"
+            >
               <img
-                src="../assets/icon/Icon.png"
+                :src="tweet.user.avatar"
                 alt="tweeter-pic"
                 style="width: 45px; height: 45px"
               />
@@ -23,25 +25,32 @@
 
           <div class="content">
             <div class="name-account">
-              <router-link to="/user/1" class="mr-2">
-                <span>Apple</span>
+              <router-link
+                :to="{ name: 'other-user', params: { id: tweet.UserId } }"
+                class="mr-2"
+              >
+                <span>{{ tweet.user.name }}</span>
               </router-link>
 
-              <small>@apple</small>
+              <small>@{{ tweet.user.account }}</small>
               <small> ‧ 10小時</small>
             </div>
 
             <div class="tweet-text">
               <p>
-                At vero eos et accusamus et iusto odio dignissimos ducimus qui
-                blanditiis praesentium voluptatum deleniti.
+                {{ tweet.description }}
               </p>
             </div>
           </div>
 
-          <div class="delete-btn">
-            <i class="fas fa-times"></i>
-          </div>
+          <form
+            class="delete-btn"
+            @submit.stop.prevent="handleDelete(tweet.id)"
+          >
+            <button type="submit" style="background: transparent; border: none">
+              <i class="fas fa-times" style="color: darkgray"></i>
+            </button>
+          </form>
         </div>
       </div>
     </div>
@@ -50,15 +59,67 @@
 
 <script>
 import AdminSideBar from "../components/AdminSideBar";
+import adminAPI from "../apis/admin";
+import { Toast } from "../utils/helpers";
 
 export default {
   components: {
     AdminSideBar,
   },
+
+  data() {
+    return {
+      tweets: [],
+    };
+  },
+
+  created() {
+    this.fetchTweets();
+  },
+
+  methods: {
+    async fetchTweets() {
+      try {
+        const { data } = await adminAPI.getTweets();
+
+        if (!data) {
+          throw new Error(data.message);
+        }
+
+        this.tweets = data;
+      } catch (error) {
+        Toast.fire({
+          icon: "error",
+          title: "無法取得推文，請稍後再試！",
+        });
+      }
+    },
+
+    async handleDelete(id) {
+      try {
+        const { data } = await adminAPI.deleteTweet({ tweetId: id });
+
+        if (data.status !== "success") {
+          throw new Error(data.message);
+        }
+
+        this.tweets = this.tweets.filter((tweet) => tweet.id !== id);
+      } catch (error) {
+        Toast.fire({
+          icon: "error",
+          title: "無法刪除推文，請稍後再試！",
+        });
+      }
+    },
+  },
 };
 </script>
 
 <style scoped>
+.container {
+  height: 100%;
+}
+
 small {
   font-size: 0.75rem;
   color: darkgray;
@@ -79,7 +140,7 @@ p {
 
 .tweets-list {
   border-left: 2px #dee2e6 solid;
-  height: 100vh;
+  height: 100%;
 }
 .tweets {
   border-bottom: 2px #dee2e6 solid;

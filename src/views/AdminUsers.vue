@@ -1,7 +1,7 @@
 <template>
   <div class="container mr-0">
     <div class="row">
-      <div class="col-2 p-0">
+      <div class="col-2 p-0" style="height: 350px">
         <AdminSideBar />
       </div>
 
@@ -12,7 +12,16 @@
 
         <div class="users-area d-flex pl-4 flex-wrap">
           <div
-            class="users d-flex flex-column align-items-center mx-1 mt-3 pb-2 border"
+            class="
+              users
+              d-flex
+              flex-column
+              align-items-center
+              mx-1
+              mt-3
+              pb-2
+              border
+            "
           >
             <div class="user-img position-relative mb-4">
               <img
@@ -69,7 +78,16 @@
           </div>
 
           <div
-            class="users d-flex flex-column align-items-center mx-1 mt-3 pb-2 border"
+            class="
+              users
+              d-flex
+              flex-column
+              align-items-center
+              mx-1
+              mt-3
+              pb-2
+              border
+            "
           >
             <div class="user-img position-relative mb-4">
               <img
@@ -126,7 +144,16 @@
           </div>
 
           <div
-            class="users d-flex flex-column align-items-center mx-1 mt-3 pb-2 border"
+            class="
+              users
+              d-flex
+              flex-column
+              align-items-center
+              mx-1
+              mt-3
+              pb-2
+              border
+            "
           >
             <div class="user-img position-relative mb-4">
               <img
@@ -183,7 +210,16 @@
           </div>
 
           <div
-            class="users d-flex flex-column align-items-center mx-1 mt-3 pb-2 border"
+            class="
+              users
+              d-flex
+              flex-column
+              align-items-center
+              mx-1
+              mt-3
+              pb-2
+              border
+            "
           >
             <div class="user-img position-relative mb-4">
               <img
@@ -240,7 +276,16 @@
           </div>
 
           <div
-            class="users d-flex flex-column align-items-center mx-1 mt-3 pb-2 border"
+            class="
+              users
+              d-flex
+              flex-column
+              align-items-center
+              mx-1
+              mt-3
+              pb-2
+              border
+            "
           >
             <div class="user-img position-relative mb-4">
               <img
