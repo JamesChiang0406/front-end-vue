@@ -14,9 +14,15 @@
           <form
             class="tweet-form d-flex justify-content-between"
             style="width: 100%"
+            @submit.stop.prevent="handleSubmit"
           >
             <div
-              class="message-area d-flex justify-content-center align-items-start"
+              class="
+                message-area
+                d-flex
+                justify-content-center
+                align-items-start
+              "
               style="width: 85%; padding-left: 5px"
             >
               <img
@@ -28,6 +34,8 @@
                 class="form-control"
                 placeholder="有什麼新鮮事?"
                 style="height: 125px; width: 90%"
+                v-model="newTweet"
+                name="newTweet"
               >
               </textarea>
             </div>
@@ -36,16 +44,28 @@
               class="tweet-button d-flex justify-content-center align-items-end"
               style="width: 15%"
             >
-              <button class="btn text-white mb-2" type="submit">推文</button>
+              <button
+                class="btn text-white mb-2"
+                type="submit"
+                :disabled="isLoading"
+              >
+                推文
+              </button>
             </div>
           </form>
         </div>
 
-        <div class="other-tweets d-flex py-2">
+        <div
+          class="other-tweets d-flex py-2"
+          v-for="tweet in tweets"
+          :key="tweet.id"
+        >
           <div class="image-area pt-2" style="margin-right: 15px">
-            <router-link to="/user/1">
+            <router-link
+              :to="{ name: 'other-user', params: { id: tweet.UserId } }"
+            >
               <img
-                src="../assets/icon/Icon.png"
+                :src="tweet.user.avatar"
                 alt="image"
                 style="width: 40px; height: 40px"
               />
@@ -56,24 +76,26 @@
             <div
               class="profile d-flex justify-content-start align-items-center"
             >
-              <router-link to="/user/1">
-                <span class="follower-name" style="margin-right: 10px"
-                  >Apple</span
-                >
+              <router-link
+                :to="{ name: 'other-user', params: { id: tweet.UserId } }"
+              >
+                <span class="follower-name" style="margin-right: 10px">{{
+                  tweet.user.name
+                }}</span>
               </router-link>
 
-              <span class="follower-account">@apple ‧ 3小時</span>
+              <span class="follower-account"
+                >@{{ tweet.user.account }} ‧ 3小時</span
+              >
             </div>
 
             <div
               class="tweet-text"
               style="text-align: start"
-              @click.stop.prevent="tweetPage(1)"
+              @click.stop.prevent="tweetPage(tweet.id)"
             >
               <p class="m-0">
-                At vero eos et accusamus et iusto odio dignissimos ducimus qui
-                blanditiis praesentium voluptatum deleniti. i amdf aodfj
-                dlafjsf, sjfaf afjsdl asljaf aslfjl
+                {{ tweet.description }}
               </p>
             </div>
 
@@ -82,14 +104,14 @@
                 <router-link to="" style="margin-right: 10px">
                   <img src="../assets/icon/reply_icon.svg" alt="comment-icon" />
                 </router-link>
-                <small>12</small>
+                <small>{{ tweet.repliedCount }}</small>
               </div>
 
               <div class="likes">
                 <router-link to="" style="margin-right: 10px">
                   <img src="../assets/icon/like_icon.svg" alt="like-icon" />
                 </router-link>
-                <small>76</small>
+                <small>{{ tweet.likedCount }}</small>
               </div>
             </div>
           </div>
@@ -116,8 +138,22 @@ import SideBar from "../components/SideBar";
 import FollowWho from "../components/FollowWho";
 import TweetingForm from "../components/TweetingForm";
 import ReplyingForm from "../components/ReplyingForm";
+import tweetAPI from "../apis/tweet";
+import { Toast } from "../utils/helpers";
 
 export default {
+  data() {
+    return {
+      tweets: [],
+      newTweet: "",
+      isLoading: false,
+    };
+  },
+
+  created() {
+    this.fetchTweets();
+  },
+
   components: {
     SideBar,
     FollowWho,
@@ -126,6 +162,34 @@ export default {
   },
 
   methods: {
+    async fetchTweets() {
+      try {
+        const { data } = await tweetAPI.getTweets();
+
+        if (!data) {
+          throw new Error(data.message);
+        }
+
+        this.tweets = data;
+      } catch (error) {
+        Toast.fire({
+          icon: "error",
+          title: "無法取得推文，請稍後再試！",
+        });
+      }
+    },
+
+    async handleSubmit() {
+      try {
+        console.log("hi");
+      } catch (error) {
+        Toast.fire({
+          icon: "error",
+          title: "無法發布此推文，請稍後再試！",
+        });
+      }
+    },
+
     tweetPage(id) {
       this.$router.push({
         name: "tweet-page",
