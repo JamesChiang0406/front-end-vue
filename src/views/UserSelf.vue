@@ -15,7 +15,7 @@
           </div>
 
           <div class="title d-flex flex-column">
-            <span class="user-name">John Doe</span>
+            <span class="user-name">{{ user.name }}</span>
             <small class="tweet-numbers">25 推文</small>
           </div>
         </div>
@@ -23,7 +23,7 @@
         <div class="user-profile position-relative">
           <div class="picture-area">
             <img
-              src="../assets/icon/Desert.jpg"
+              :src="user.cover"
               alt="user-pic"
               style="
                 width: 100%;
@@ -34,11 +34,7 @@
             />
 
             <div class="edit-area d-flex justify-content-between px-3">
-              <img
-                src="../assets/icon/Icon.png"
-                alt="user-pic"
-                class="user-pic"
-              />
+              <img :src="user.avatar" alt="user-pic" class="user-pic" />
               <button class="btn edit-btn">編輯個人資料</button>
             </div>
           </div>
@@ -46,12 +42,12 @@
 
         <div class="introduction d-flex flex-column mt-5 p-2">
           <div class="name-account d-flex flex-column position-relative mb-3">
-            <span class="user-name">John Doe</span>
-            <small class="user-account">@heyjohn</small>
+            <span class="user-name">{{ user.name }}</span>
+            <small class="user-account">@{{ user.account }}</small>
           </div>
 
           <p class="description">
-            At vero eos et accusamus et iusto odio dignissimos ducimus.
+            {{ user.introduction }}
           </p>
 
           <div class="following-followers d-flex">
@@ -155,6 +151,8 @@
 import SideBar from "../components/SideBar";
 import FollowWho from "../components/FollowWho";
 import ProfileEditPage from "../components/ProfileEditPage";
+import { Toast } from "../utils/helpers";
+import userAPI from "../apis/users";
 
 export default {
   components: {
@@ -167,7 +165,12 @@ export default {
     return {
       id: 2,
       isLiked: false,
+      user: {},
     };
+  },
+
+  created() {
+    this.fetchUser({ userId: 9 });
   },
 
   methods: {
@@ -176,6 +179,19 @@ export default {
         name: "tweet-page",
         params: { id },
       });
+    },
+
+    async fetchUser({ userId }) {
+      try {
+        const { data } = await userAPI.getUser({ userId });
+        console.log(data);
+        this.user = data;
+      } catch (error) {
+        Toast.fire({
+          icon: "error",
+          title: "無法取得資料，請稍後再試！",
+        });
+      }
     },
   },
 };
@@ -188,6 +204,7 @@ body {
 }
 
 .title {
+  width: 50%;
   text-align: start;
   position: relative;
   bottom: 8px;
