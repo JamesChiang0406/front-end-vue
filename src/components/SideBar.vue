@@ -84,7 +84,7 @@ export default {
 
 <style scoped>
 .container {
-  height: 100%;
+  height: 600px;
   justify-content: space-between;
 }
 img {

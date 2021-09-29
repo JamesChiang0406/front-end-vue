@@ -16,7 +16,7 @@
 
           <div class="title d-flex flex-column">
             <span class="user-name">{{ user.name }}</span>
-            <small class="tweet-numbers">25 推文</small>
+            <small class="tweet-numbers">{{ tweets.length }} 推文</small>
           </div>
         </div>
 
@@ -71,11 +71,17 @@
           <router-link class="" to="">喜歡的內容</router-link>
         </div>
 
-        <div class="other-tweets d-flex py-2">
+        <div
+          class="other-tweets d-flex py-2"
+          v-for="tweet in tweets"
+          :key="tweet.id"
+        >
           <div class="image-area pt-2" style="margin-right: 15px">
-            <router-link to="/user/1">
+            <router-link
+              :to="{ name: 'other-user', params: { id: tweet.UserId } }"
+            >
               <img
-                src="../assets/icon/Icon.png"
+                :src="tweet.user.avatar"
                 alt="icon"
                 style="width: 40px; height: 40px"
               />
@@ -87,24 +93,24 @@
               class="profile d-flex justify-content-start align-items-center"
             >
               <router-link
-                to="/user/1"
+                :to="{ name: 'other-user', params: { id: tweet.UserId } }"
                 class="follower-name d-flex align-items-center"
               >
-                <span>Apple</span>
+                <span>{{ tweet.user.name }}</span>
               </router-link>
 
-              <span class="follower-account">@apple ‧ 3小時</span>
+              <span class="follower-account"
+                >@{{ tweet.user.account }} ‧ 3小時</span
+              >
             </div>
 
             <div
               class="tweet"
               style="text-align: start"
-              @click.stop.prevent="tweetPage(1)"
+              @click.stop.prevent="tweetPage(tweet.id)"
             >
               <p class="m-0">
-                At vero eos et accusamus et iusto odio dignissimos ducimus qui
-                blanditiis praesentium voluptatum deleniti. i amdf aodfj
-                dlafjsf, sjfaf afjsdl asljaf aslfjl
+                {{ tweet.description }}
               </p>
             </div>
 
@@ -113,7 +119,7 @@
                 <router-link to="" style="margin-right: 10px">
                   <img src="../assets/icon/reply_icon.svg" alt="comment-icon" />
                 </router-link>
-                <small>12</small>
+                <small>{{ tweet.repliedCount }}</small>
               </div>
 
               <div class="likes">
@@ -129,7 +135,9 @@
                   alt="like-icon"
                   style="margin-right: 10px"
                 />
-                <small :class="{ isActived: isLiked }">76</small>
+                <small :class="{ isActived: isLiked }">{{
+                  tweet.likedCount
+                }}</small>
               </div>
             </div>
           </div>
@@ -153,6 +161,7 @@ import FollowWho from "../components/FollowWho";
 import ProfileEditPage from "../components/ProfileEditPage";
 import { Toast } from "../utils/helpers";
 import userAPI from "../apis/users";
+import tweetAPI from "../apis/tweet";
 
 export default {
   components: {
@@ -166,11 +175,13 @@ export default {
       id: 2,
       isLiked: false,
       user: {},
+      tweets: [],
     };
   },
 
   created() {
     this.fetchUser({ userId: 9 });
+    this.fetchTweets();
   },
 
   methods: {
@@ -184,8 +195,20 @@ export default {
     async fetchUser({ userId }) {
       try {
         const { data } = await userAPI.getUser({ userId });
-        console.log(data);
+
         this.user = data;
+      } catch (error) {
+        Toast.fire({
+          icon: "error",
+          title: "無法取得資料，請稍後再試！",
+        });
+      }
+    },
+
+    async fetchTweets() {
+      try {
+        const { data } = await tweetAPI.getTweets();
+        this.tweets = data;
       } catch (error) {
         Toast.fire({
           icon: "error",
