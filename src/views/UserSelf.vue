@@ -172,7 +172,7 @@ export default {
 
   data() {
     return {
-      id: 2,
+      id: this.$store.state.currentUser.id,
       isLiked: false,
       user: {},
       tweets: [],
@@ -180,7 +180,7 @@ export default {
   },
 
   created() {
-    this.fetchUser({ userId: 9 });
+    this.fetchUser({ userId: this.id });
     this.fetchTweets();
   },
 

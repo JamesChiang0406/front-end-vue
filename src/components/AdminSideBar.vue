@@ -46,7 +46,9 @@
 
       <div class="logout-area" style="padding-left: 3px">
         <img src="../assets/icon/logout_icon.png" alt="logout-icon" />
-        <router-link to="">登出</router-link>
+        <router-link to="/admin">
+          <button type="button" @click="logout">登出</button>
+        </router-link>
       </div>
     </div>
   </div>
@@ -59,6 +61,12 @@ export default {
       mainIsClicked: false,
       usersIsClicked: false,
     };
+  },
+
+  methods: {
+    logout() {
+      this.$store.commit("revokeAuthentication");
+    },
   },
 };
 </script>
@@ -76,6 +84,16 @@ a {
   font-weight: bold;
 }
 a:hover {
+  color: #ff6600;
+}
+
+button {
+  color: black;
+  background-color: transparent;
+  border-color: transparent;
+  font-weight: bold;
+}
+button:hover {
   color: #ff6600;
 }
 

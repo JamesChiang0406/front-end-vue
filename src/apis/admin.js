@@ -6,10 +6,10 @@ export default {
   },
 
   deleteTweet({ tweetId }) {
-    return apiHelper.delete(`admin/tweets/${tweetId}`)
+    return apiHelper.delete(`/admin/tweets/${tweetId}`)
   },
 
   getUsers() {
-    return apiHelper.get('admin/users')
+    return apiHelper.get('/admin/users')
   }
 }

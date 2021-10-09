@@ -7,5 +7,13 @@ export default {
 
   getUser({ userId }) {
     return apiHelper.get(`/users/${userId}`)
+  },
+
+  getCurrentUser() {
+    return apiHelper.get('/users/current_user')
+  },
+
+  putUser({ userId }, payload) {
+    return apiHelper.put(`/users/${userId}`, payload)
   }
 }

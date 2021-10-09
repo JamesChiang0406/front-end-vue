@@ -8,7 +8,7 @@
       <div class="title px-3">帳戶設定</div>
 
       <div class="setting-form px-3">
-        <form>
+        <form @submit.stop.prevent="handleSubmit">
           <!-- account -->
           <div class="form-label-group mb-4">
             <label for="account">帳號</label>
@@ -54,6 +54,7 @@
               v-model="password"
               name="password"
               id="password"
+              required
             />
           </div>
 
@@ -61,11 +62,12 @@
           <div class="form-label-group mb-4">
             <label for="passwordCheck">密碼確認</label>
             <input
-              type="text"
+              type="password"
               class="form-control mt-3"
               v-model="passwordCheck"
               name="passwordCheck"
               id="passwordCheck"
+              required
             />
           </div>
 
@@ -73,7 +75,13 @@
             class="btn-wrapper d-flex justify-content-end"
             style="width: 540px"
           >
-            <button class="btn my-2 submit-btn" type="submit">儲存</button>
+            <button
+              class="btn my-2 submit-btn"
+              type="submit"
+              :disabled="isSetting"
+            >
+              儲存
+            </button>
           </div>
         </form>
       </div>
@@ -83,19 +91,76 @@
 
 <script>
 import SideBar from "../components/SideBar";
+import userAPI from "../apis/users";
+import { Toast } from "../utils/helpers";
 
 export default {
   data() {
     return {
+      id: this.$store.state.currentUser.id,
       account: "",
       name: "",
       email: "",
       password: "",
       passwordCheck: "",
+      isSetting: false,
     };
   },
+
   components: {
     SideBar,
+  },
+
+  created() {
+    this.fetchUser({ userId: this.id });
+  },
+
+  methods: {
+    async fetchUser({ userId }) {
+      try {
+        const { data } = await userAPI.getUser({ userId });
+
+        this.account = data.account;
+        this.name = data.name;
+        this.email = data.email;
+      } catch (error) {
+        Toast.fire({
+          icon: "error",
+          title: "無法取得資料，請稍後再試！",
+        });
+      }
+    },
+
+    async handleSubmit() {
+      try {
+        if (!this.password || !this.passwordCheck) {
+          return Toast.fire({
+            icon: "error",
+            title: "尚有欄位未填，請重新確認！",
+          });
+        }
+        this.isSetting = true;
+
+        const userId = this.id;
+        const payload = {
+          account: this.account,
+          name: this.name,
+          email: this.email,
+          password: this.password,
+          passwordCheck: this.passwordCheck,
+        };
+
+        const { data } = await userAPI.putUser({ userId }, payload);
+        console.log(data);
+        this.isSetting = false;
+      } catch (error) {
+        this.isSetting = false;
+        Toast.fire({
+          icon: "error",
+          title: "無法設定使用者資料，請重新確認！",
+        });
+      }
+    },
   },
 };
 </script>
