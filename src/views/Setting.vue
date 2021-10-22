@@ -47,7 +47,7 @@
 
           <!-- password -->
           <div class="form-label-group mb-4">
-            <label for="password">密碼</label>
+            <label for="password">重新設定密碼</label>
             <input
               type="password"
               class="form-control mt-3"
@@ -151,7 +151,14 @@ export default {
         };
 
         const { data } = await userAPI.putUser({ userId }, payload);
-        console.log(data);
+        if (data.status !== "success") {
+          throw new Error(data.message);
+        }
+
+        Toast.fire({
+          icon: "success",
+          title: "資料設定成功！",
+        });
         this.isSetting = false;
       } catch (error) {
         this.isSetting = false;

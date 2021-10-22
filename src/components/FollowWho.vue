@@ -6,11 +6,13 @@
 
     <div
       class="followers d-flex justify-content-between align-items-center p-2"
+      v-for="user in showData"
+      :key="user.id"
     >
       <div class="follower-profile d-flex" style="width: 75%">
         <div class="follower-pic" style="width: 20%">
-          <router-link to="/user/1">
-            <img src="../assets/icon/Icon.png" alt="follower-pic" />
+          <router-link :to="{ name: 'other-user', params: { id: user.id } }">
+            <img :src="user.avatar" alt="" />
           </router-link>
         </div>
 
@@ -18,46 +20,146 @@
           class="name-account d-flex justify-content-start flex-wrap"
           style="width: 80%"
         >
-          <span class="follower-name fw-bold">Mr Denny's</span>
-          <small class="follower-account">@mrdennys</small>
-        </div>
-      </div>
-
-      <div style="width: 25%" class="">
-        <button class="btn follow-btn">跟隨</button>
-        <button class="btn following-btn">正在跟隨</button>
-      </div>
-    </div>
-
-    <div
-      class="followers d-flex justify-content-between align-items-center p-2"
-    >
-      <div class="follower-profile d-flex" style="width: 75%">
-        <div class="follower-pic" style="width: 20%">
-          <router-link to="/user/1">
-            <img src="../assets/icon/Icon.png" alt="follower-pic" />
-          </router-link>
-        </div>
-
-        <div
-          class="name-account d-flex justify-content-start flex-wrap"
-          style="width: 80%"
-        >
-          <span class="follower-name fw-bold">Mr Denny's</span>
-          <small class="follower-account">@mrdennys</small>
+          <span class="follower-name fw-bold">{{ user.name }}</span>
+          <small class="follower-account">@{{ user.account }}</small>
         </div>
       </div>
 
       <div style="width: 25%">
-        <button class="btn follow-btn">跟隨</button>
+        <button
+          class="btn following-btn"
+          v-if="user.isFollowing"
+          @click.stop.prevent="removeFollowing(user.id)"
+        >
+          跟隨中
+        </button>
+        <button
+          class="btn follow-btn"
+          v-else
+          @click.stop.prevent="addFollowing(user.id)"
+        >
+          跟隨
+        </button>
       </div>
     </div>
 
     <div class="show-more">
-      <button class="btn show-btn">顯示更多</button>
+      <button
+        class="btn show-btn"
+        @click.stop.prevent="showRecommendList"
+        v-if="clickable"
+      >
+        顯示更多
+      </button>
     </div>
   </div>
 </template>
+
+<script>
+import userAPI from "../apis/users";
+import { Toast } from "../utils/helpers";
+
+export default {
+  props: {
+    toPageId: {
+      require: false,
+    },
+  },
+  data() {
+    return {
+      recommendListData: {},
+      showData: [],
+      clickable: true,
+    };
+  },
+
+  created() {
+    this.fetchRecommendList();
+  },
+
+  watch: {
+    toPageId: function () {
+      this.showData = [];
+      for (let i = 0; i < 3; i++) {
+        this.showData.push(this.recommendListData[i]);
+      }
+      this.clickable = true;
+    },
+  },
+
+  methods: {
+    async fetchRecommendList() {
+      try {
+        const { data } = await userAPI.getRecommendList();
+
+        this.recommendListData = data;
+        for (let i = 0; i < 3; i++) {
+          this.showData.push(data[i]);
+        }
+      } catch (error) {
+        Toast.fire({
+          icon: "error",
+          title: "無法取得推薦欄資料，請稍後再試！",
+        });
+      }
+    },
+
+    showRecommendList() {
+      if (this.showData.length < this.recommendListData.length) {
+        this.showData.push(this.recommendListData[this.showData.length]);
+
+        if (this.showData.length === this.recommendListData.length) {
+          this.clickable = false;
+        }
+      }
+    },
+
+    async addFollowing(id) {
+      try {
+        const { data } = await userAPI.addFollowing({ id });
+        if (data.status === "error") {
+          throw new Error(data.message);
+        }
+
+        this.showData.map((user) => {
+          if (user.id === id) {
+            user.isFollowing = true;
+          } else {
+            return;
+          }
+        });
+      } catch (error) {
+        Toast.fire({
+          icon: "error",
+          title: "無法追蹤，請稍後再試！",
+        });
+      }
+    },
+
+    async removeFollowing(id) {
+      try {
+        const { data } = await userAPI.removeFollowing({ id });
+        if (data.status === "error") {
+          throw new Error(data.message);
+        }
+
+        this.showData.map((user) => {
+          if (user.id === id) {
+            user.isFollowing = false;
+          } else {
+            return;
+          }
+        });
+      } catch (error) {
+        Toast.fire({
+          icon: "error",
+          title: "無法操作，請稍後再試！",
+        });
+      }
+    },
+  },
+};
+</script>
 
 <style scoped>
 .container {
@@ -107,14 +209,13 @@ img {
   padding: 5px 2px 2px 2px;
 }
 .following-btn {
-  display: none;
   border-radius: 20px;
   color: white;
   background-color: #ff6600;
   border-color: #ff6600;
   width: 100%;
   height: 100%;
-  font-size: 0.65rem;
+  font-size: 0.8rem;
   padding: 5px 2px 2px 2px;
 }
 

@@ -15,5 +15,17 @@ export default {
 
   putUser({ userId }, payload) {
     return apiHelper.put(`/users/${userId}`, payload)
+  },
+
+  getRecommendList() {
+    return apiHelper.get('/followships')
+  },
+
+  addFollowing({ id }) {
+    return apiHelper.post('/followships', { id })
+  },
+
+  removeFollowing({ id }) {
+    return apiHelper.delete(`/followships/${id}`)
   }
 }

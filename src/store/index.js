@@ -40,7 +40,6 @@ export default new Vuex.Store({
       try {
         const { data } = await userAPI.getCurrentUser()
         const { id, account, avatar, cover, email, introduction, name, role } = data
-
         if (!data) {
           throw new Error('資料為空，請重新確認！')
         }

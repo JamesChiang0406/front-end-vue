@@ -58,7 +58,7 @@ const routes = [
   {
     path: '/users/:id',
     name: 'other-user',
-    component: () => import('../views/UserSelf.vue'),
+    component: () => import('../views/OtherUsersPage.vue'),
     beforeEnter: authIsUser
   },
   {

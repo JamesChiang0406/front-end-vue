@@ -53,13 +53,13 @@
           <div class="following-followers d-flex">
             <div class="mr-3">
               <router-link to="/user/self/following" class="following">
-                <span>30 個跟隨中</span>
+                <span>34個跟隨中</span>
               </router-link>
             </div>
 
             <div>
               <router-link to="/user/self/follower" class="followers">
-                <span>20 位跟隨者</span>
+                <span>59位跟隨者</span>
               </router-link>
             </div>
           </div>
@@ -145,7 +145,7 @@
       </div>
 
       <div class="col-3 pr-0 pl-2 pt-2">
-        <FollowWho />
+        <FollowWho :to-page-id="id" />
       </div>
     </div>
 
@@ -172,7 +172,7 @@ export default {
 
   data() {
     return {
-      id: this.$store.state.currentUser.id,
+      id: this.$route.params.id,
       isLiked: false,
       user: {},
       tweets: [],
@@ -182,6 +182,13 @@ export default {
   created() {
     this.fetchUser({ userId: this.id });
     this.fetchTweets();
+  },
+
+  beforeRouteUpdate(to, from, next) {
+    this.id = to.params;
+    const { id } = to.params;
+    this.fetchUser({ userId: id });
+    next();
   },
 
   methods: {
