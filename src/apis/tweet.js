@@ -5,7 +5,11 @@ export default {
     return apiHelper.get('/tweets')
   },
 
-  createTweet({ newTweet }) {
-    return apiHelper.post('/tweets', { newTweet })
+  createTweet({ description }) {
+    return apiHelper.post('/tweets', { description })
+  },
+
+  deleteTweet({ tweet_id }) {
+    return apiHelper.delete(`/tweets/${tweet_id}`)
   }
 }

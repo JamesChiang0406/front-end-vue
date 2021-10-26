@@ -56,63 +56,78 @@
         </div>
 
         <div
-          class="other-tweets d-flex py-2"
+          class="other-tweets d-flex justify-content-between py-2"
           v-for="tweet in tweets"
           :key="tweet.id"
         >
-          <div class="image-area pt-2" style="margin-right: 15px">
-            <router-link
-              :to="{ name: 'other-user', params: { id: tweet.UserId } }"
-            >
-              <img
-                :src="tweet.user.avatar"
-                alt="image"
-                style="width: 40px; height: 40px"
-              />
-            </router-link>
-          </div>
-
-          <div class="tweets-area d-flex flex-wrap">
-            <div
-              class="profile d-flex justify-content-start align-items-center"
-            >
+          <div class="d-flex" style="width: 80%">
+            <div class="image-area pt-2" style="margin-right: 15px">
               <router-link
                 :to="{ name: 'other-user', params: { id: tweet.UserId } }"
               >
-                <span class="follower-name" style="margin-right: 10px">{{
-                  tweet.user.name
-                }}</span>
+                <img
+                  :src="tweet.user.avatar"
+                  alt="image"
+                  style="width: 40px; height: 40px"
+                />
               </router-link>
+            </div>
 
-              <span class="follower-account"
-                >@{{ tweet.user.account }} ‧ 3小時</span
+            <div class="tweets-area d-flex flex-wrap">
+              <div
+                class="profile d-flex justify-content-start align-items-center"
               >
-            </div>
-
-            <div
-              class="tweet-text"
-              style="text-align: start"
-              @click.stop.prevent="tweetPage(tweet.id)"
-            >
-              <p class="m-0">
-                {{ tweet.description }}
-              </p>
-            </div>
-
-            <div class="icon-area d-flex justify-content-start">
-              <div class="comments" style="margin-right: 30px">
-                <router-link to="" style="margin-right: 10px">
-                  <img src="../assets/icon/reply_icon.svg" alt="comment-icon" />
+                <router-link
+                  :to="{ name: 'other-user', params: { id: tweet.UserId } }"
+                >
+                  <span class="follower-name" style="margin-right: 10px">{{
+                    tweet.user.name
+                  }}</span>
                 </router-link>
-                <small>{{ tweet.repliedCount }}</small>
+
+                <span class="follower-account"
+                  >@{{ tweet.user.account }} ‧ 3小時</span
+                >
               </div>
 
-              <div class="likes">
-                <router-link to="" style="margin-right: 10px">
-                  <img src="../assets/icon/like_icon.svg" alt="like-icon" />
-                </router-link>
-                <small>{{ tweet.likedCount }}</small>
+              <div
+                class="tweet-text"
+                style="text-align: start"
+                @click.stop.prevent="tweetPage(tweet.id)"
+              >
+                <p class="m-0">
+                  {{ tweet.description }}
+                </p>
               </div>
+
+              <div class="icon-area d-flex justify-content-start">
+                <div class="comments" style="margin-right: 30px">
+                  <router-link to="" style="margin-right: 10px">
+                    <img
+                      src="../assets/icon/reply_icon.svg"
+                      alt="comment-icon"
+                    />
+                  </router-link>
+                  <small>{{ tweet.repliedCount }}</small>
+                </div>
+
+                <div class="likes">
+                  <router-link to="" style="margin-right: 10px">
+                    <img src="../assets/icon/like_icon.svg" alt="like-icon" />
+                  </router-link>
+                  <small>{{ tweet.likedCount }}</small>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div
+            class="border"
+            style="width: 10%; height: 30px"
+            v-show="tweet.isUserTweet"
+          >
+            <div @click.stop.prevent="deleteTweet(tweet.id, tweet.UserId)">
+              <i class="fas fa-times del-btn"></i>
             </div>
           </div>
         </div>
@@ -171,6 +186,9 @@ export default {
         }
 
         this.tweets = data;
+        this.tweets.forEach((tweet) => {
+          tweet.isUserTweet = this.$store.state.currentUser.id === tweet.UserId;
+        });
       } catch (error) {
         Toast.fire({
           icon: "error",
@@ -181,7 +199,22 @@ export default {
 
     async handleSubmit() {
       try {
-        console.log("hi");
+        this.isLoading = true;
+        const { data } = await tweetAPI.createTweet({
+          description: this.newTweet,
+        });
+
+        if (data.status === "error") {
+          throw new Error(data.message);
+        }
+
+        Toast.fire({
+          icon: "success",
+          title: "推文成功！",
+        });
+        this.isLoading = false;
+        this.newTweet = "";
+        this.fetchTweets();
       } catch (error) {
         Toast.fire({
           icon: "error",
@@ -195,6 +228,35 @@ export default {
         name: "tweet-page",
         params: { id },
       });
+    },
+
+    async deleteTweet(id, tweetUserId) {
+      try {
+        const userId = this.$store.state.currentUser.id;
+
+        if (userId !== tweetUserId) {
+          throw new Error("此動作未授權，請重新確認！");
+        } else {
+          const { data } = await tweetAPI.deleteTweet({ tweet_id: id });
+          if (data.status === "error") {
+            throw new Error(data.message);
+          }
+
+          Toast.fire({
+            icon: "success",
+            title: "推文刪除成功",
+          });
+          this.tweets = this.tweets.filter((tweet) => {
+            return tweet.id !== id;
+          });
+        }
+      } catch (error) {
+        console.log(error);
+        Toast.fire({
+          icon: "error",
+          title: "無法刪除，請稍後再試！",
+        });
+      }
     },
   },
 };
@@ -265,6 +327,10 @@ button {
 .tweet-text,
 .icon-area {
   width: 100%;
+}
+.del-btn:hover {
+  cursor: pointer;
+  color: #dc3545;
 }
 
 .follower-name {
