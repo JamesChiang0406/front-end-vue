@@ -53,22 +53,40 @@
           <div class="following-followers d-flex">
             <div class="mr-3">
               <router-link to="/user/self/following" class="following">
-                <span>30 個跟隨中</span>
+                <span>{{ user.followingCount }} 個跟隨中</span>
               </router-link>
             </div>
 
             <div>
               <router-link to="/user/self/follower" class="followers">
-                <span>20 位跟隨者</span>
+                <span>{{ user.followerCount }} 位跟隨者</span>
               </router-link>
             </div>
           </div>
         </div>
 
         <div class="show-btns d-flex justify-content-start border-bottom">
-          <router-link class="firstClicked" to="">推文</router-link>
-          <router-link class="" to="">推文與回覆</router-link>
-          <router-link class="" to="">喜歡的內容</router-link>
+          <div
+            class="changeArea"
+            :class="{ firstClicked: isTweetsArea }"
+            @click.stop.prevent="fetchTweets()"
+          >
+            推文
+          </div>
+          <div
+            class="changeArea"
+            :class="{ firstClicked: isRepliedArea }"
+            @click.stop.prevent="fetchReplies()"
+          >
+            推文與回覆
+          </div>
+          <div
+            class="changeArea"
+            :class="{ firstClicked: isLikeArea }"
+            @click.stop.prevent="fetchLikedTweets()"
+          >
+            喜歡的內容
+          </div>
         </div>
 
         <div
@@ -104,6 +122,18 @@
               >
             </div>
 
+            <span style="font-size: 0.75rem" v-if="isRepliedArea"
+              >回覆給
+              <router-link
+                class="repliedArea"
+                :to="{
+                  name: 'other-user',
+                  params: { id: tweet.repliedUserId },
+                }"
+                >@{{ tweet.repliedUserAccount }}</router-link
+              >
+            </span>
+
             <div
               class="tweet"
               style="text-align: start"
@@ -114,30 +144,47 @@
               </p>
             </div>
 
-            <div class="icon-area d-flex justify-content-start">
+            <div
+              class="icon-area d-flex justify-content-start"
+              v-if="iconSwitch"
+            >
               <div class="comments" style="margin-right: 30px">
-                <router-link to="" style="margin-right: 10px">
+                <router-link to="" style="margin-right: 5px">
                   <img src="../assets/icon/reply_icon.svg" alt="comment-icon" />
                 </router-link>
                 <small>{{ tweet.repliedCount }}</small>
               </div>
 
-              <div class="likes">
-                <img
-                  v-if="isLiked"
-                  src="../assets/icon/like_icon_active.svg"
-                  alt="like-icon"
-                  style="margin-right: 10px; width: 13px; height: 13px"
-                />
-                <img
+              <div class="likes d-flex justify-content-start">
+                <div
+                  v-if="tweet.isLiked"
+                  style="margin-right: 5px"
+                  @click.stop.prevent="unlikeThisTweet(tweet.id)"
+                >
+                  <img
+                    src="../assets/icon/like_icon_active.svg"
+                    alt="like-icon"
+                    style="width: 13px; height: 13px"
+                  />
+                </div>
+
+                <div
                   v-else
-                  src="../assets/icon/like_icon.svg"
-                  alt="like-icon"
-                  style="margin-right: 10px"
-                />
-                <small :class="{ isActived: isLiked }">{{
-                  tweet.likedCount
-                }}</small>
+                  style="margin-right: 5px"
+                  @click.stop.prevent="likeThisTweet(tweet.id)"
+                >
+                  <img
+                    src="../assets/icon/like_icon.svg"
+                    alt="like-icon"
+                    style="width: 13px; height: 13px"
+                  />
+                </div>
+
+                <div>
+                  <small :class="{ isActived: tweet.isLiked }">
+                    {{ tweet.likedCount }}
+                  </small>
+                </div>
               </div>
             </div>
           </div>
@@ -173,9 +220,12 @@ export default {
   data() {
     return {
       id: this.$store.state.currentUser.id,
-      isLiked: false,
       user: {},
       tweets: [],
+      isTweetsArea: true,
+      isRepliedArea: false,
+      isLikeArea: false,
+      iconSwitch: true,
     };
   },
 
@@ -207,12 +257,108 @@ export default {
 
     async fetchTweets() {
       try {
+        this.iconSwitch = true;
+        this.isTweetsArea = true;
+        this.isRepliedArea = false;
+        this.isLikeArea = false;
+
         const { data } = await tweetAPI.getTweets();
+        if (data.status === "error") {
+          throw new Error(data.message);
+        }
+
         this.tweets = data;
+        this.tweets = this.tweets.filter((tweet) => tweet.UserId === this.id);
       } catch (error) {
         Toast.fire({
           icon: "error",
           title: "無法取得資料，請稍後再試！",
+        });
+      }
+    },
+
+    async fetchReplies() {
+      try {
+        this.iconSwitch = false;
+        this.isTweetsArea = false;
+        this.isLikeArea = false;
+
+        const userId = this.id;
+        const { data } = await tweetAPI.getReplies({ userId });
+        if (data.status === "error") {
+          throw new Error(data.message);
+        }
+
+        this.tweets = data;
+        this.isRepliedArea = true;
+      } catch (error) {
+        Toast.fire({
+          icon: "error",
+          title: "無法獲得資料，請稍後再試！",
+        });
+      }
+    },
+
+    async fetchLikedTweets() {
+      try {
+        this.isTweetsArea = false;
+        this.isRepliedArea = false;
+        this.isLikeArea = true;
+        this.iconSwitch = true;
+
+        const { data } = await tweetAPI.getTweets();
+        if (data.status === "error") {
+          throw new Error(data.message);
+        }
+
+        this.tweets = data;
+        this.tweets = this.tweets.filter((tweet) => tweet.isLiked === true);
+      } catch (error) {
+        Toast.fire({
+          icon: "error",
+          title: "無法取得資料，請稍後再試！",
+        });
+      }
+    },
+
+    async likeThisTweet(tweetId) {
+      try {
+        const { data } = await tweetAPI.likeTweet({ tweetId });
+        if (data.status === "error") {
+          throw new Error(data.message);
+        }
+
+        this.tweets.map((tweet) => {
+          if (tweet.id === tweetId) {
+            tweet.isLiked = true;
+            tweet.likedCount += 1;
+          }
+        });
+      } catch (error) {
+        Toast.fire({
+          icon: "error",
+          title: "無法操作，請稍後再試！",
+        });
+      }
+    },
+
+    async unlikeThisTweet(tweetId) {
+      try {
+        const { data } = await tweetAPI.unlikeTweet({ tweetId });
+        if (data.status === "error") {
+          throw new Error(data.message);
+        }
+
+        this.tweets.map((tweet) => {
+          if (tweet.id === tweetId) {
+            tweet.isLiked = false;
+            tweet.likedCount -= 1;
+          }
+        });
+      } catch (error) {
+        Toast.fire({
+          icon: "error",
+          title: "無法操作，請稍後再試！",
         });
       }
     },
@@ -279,6 +425,17 @@ a {
   font-size: 16px;
 }
 
+.changeArea {
+  width: 23%;
+  padding: 10px 0;
+  text-decoration-line: none;
+  color: #2e2e2e;
+  font-size: 16px;
+  font-weight: bolder;
+}
+.changeArea:hover {
+  cursor: pointer;
+}
 .firstClicked,
 .clicking {
   color: #ff6600;
@@ -302,6 +459,12 @@ a {
   width: 52px;
   height: 30px;
   font-weight: bold;
+}
+
+.repliedArea:hover {
+  color: crimson;
+  cursor: pointer;
+  text-decoration-line: underline;
 }
 
 a,
@@ -329,7 +492,6 @@ a,
 .comments:hover,
 .likes:hover,
 .isActived {
-  text-decoration-line: underline;
   color: crimson;
 }
 

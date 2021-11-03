@@ -93,8 +93,15 @@ export default {
         const { data } = await userAPI.getRecommendList();
 
         this.recommendListData = data;
-        for (let i = 0; i < 3; i++) {
-          this.showData.push(data[i]);
+
+        if (this.recommendListData.length <= 3) {
+          for (let i = 0; i < 1; i++) {
+            this.showData.push(data[i]);
+          }
+        } else {
+          for (let i = 0; i < 3; i++) {
+            this.showData.push(data[i]);
+          }
         }
       } catch (error) {
         Toast.fire({
