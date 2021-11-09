@@ -44,13 +44,13 @@ const routes = [
     beforeEnter: authIsUser
   },
   {
-    path: '/user/self/following',
+    path: '/user/self/followings',
     name: 'user-following',
     component: () => import('../views/UserFollow.vue'),
     beforeEnter: authIsUser
   },
   {
-    path: '/user/self/follower',
+    path: '/user/self/followers',
     name: 'user-follower',
     component: () => import('../views/UserFollow.vue'),
     beforeEnter: authIsUser

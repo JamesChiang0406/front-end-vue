@@ -52,14 +52,14 @@
 
           <div class="following-followers d-flex">
             <div class="mr-3">
-              <router-link to="/user/self/following" class="following">
-                <span>{{ user.followingCount }} 個跟隨中</span>
+              <router-link to="/user/self/followers" class="followers">
+                <span>{{ user.followerCount }} 位跟隨者</span>
               </router-link>
             </div>
 
             <div>
-              <router-link to="/user/self/follower" class="followers">
-                <span>{{ user.followerCount }} 位跟隨者</span>
+              <router-link to="/user/self/followings" class="following">
+                <span>{{ user.followingCount }} 個跟隨中</span>
               </router-link>
             </div>
           </div>

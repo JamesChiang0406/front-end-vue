@@ -61,10 +61,11 @@ import { Toast } from "../utils/helpers";
 
 export default {
   props: {
-    toPageId: {
+    followData: {
       require: false,
     },
   },
+
   data() {
     return {
       recommendListData: {},
@@ -75,16 +76,6 @@ export default {
 
   created() {
     this.fetchRecommendList();
-  },
-
-  watch: {
-    toPageId: function () {
-      this.showData = [];
-      for (let i = 0; i < 3; i++) {
-        this.showData.push(this.recommendListData[i]);
-      }
-      this.clickable = true;
-    },
   },
 
   methods: {
@@ -135,6 +126,8 @@ export default {
             return;
           }
         });
+
+        this.$emit("addMark", id);
       } catch (error) {
         Toast.fire({
           icon: "error",
@@ -157,6 +150,7 @@ export default {
             return;
           }
         });
+        this.$emit("removeMark", id);
       } catch (error) {
         Toast.fire({
           icon: "error",

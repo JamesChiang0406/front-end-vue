@@ -8,24 +8,30 @@
       <div class="follow-list col-6 p-0 border">
         <div class="nav-bar d-flex align-items-center p-2">
           <div
-            class="back-icon mr-4 d-flex align-items-center"
+            class="back-icon mr-3 d-flex align-items-center"
             @click="$router.back()"
           >
             <i class="fas fa-arrow-left"></i>
           </div>
-
-          <div class="title d-flex flex-column">
-            <span class="user-name">John Doe</span>
-            <small class="tweet-numbers">25 推文</small>
+          <div class="title d-flex align-items-center">
+            <span class="user-name" style="font-weight: bold">John Doe</span>
           </div>
         </div>
 
         <div class="following-followers d-flex mt-3">
-          <div class="follower firstClicked">
+          <div
+            class="follower"
+            :class="{ firstClicked: followersClicked }"
+            @click.stop.prevent="fetchFollowers(userId)"
+          >
             <span>跟隨者</span>
           </div>
 
-          <div class="following">
+          <div
+            class="following"
+            :class="{ firstClicked: followingsClicked }"
+            @click.stop.prevent="fetchFollowings(userId)"
+          >
             <span>正在跟隨</span>
           </div>
         </div>
@@ -33,66 +39,55 @@
         <div
           class="members p-2 d-flex"
           style="border-bottom: 2px #dee2e6 solid"
+          v-for="user in followData"
+          :key="user.id"
         >
-          <div class="member-pic pt-2 mr-2">
+          <div class="member-pic pt-2 mr-2" style="width: 11%">
             <img
-              src="../assets/icon/Icon.png"
-              alt="member-pic"
+              :src="user.avatar"
+              alt="..."
               style="width: 40px; height: 40px"
             />
           </div>
 
-          <div class="member-data">
+          <div class="member-data" style="width: 89%">
             <div class="d-flex justify-content-between align-items-center">
               <div class="member d-flex flex-column">
-                <span class="member-name" style="font-weight: bold">Laure</span>
-                <small class="member-account">@LaureBill</small>
+                <span class="member-name" style="font-weight: bold">{{
+                  user.name
+                }}</span>
+                <small class="member-account">@{{ user.account }}</small>
               </div>
 
-              <button class="follow-btn btn">跟隨</button>
-              <button class="following-btn btn">正在跟隨</button>
+              <button
+                class="following-btn btn"
+                v-if="user.isFollowing"
+                @click.stop.prevent="removeFollowing(user.id)"
+              >
+                正在跟隨
+              </button>
+              <button
+                class="follow-btn btn"
+                v-else
+                @click.stop.prevent="addFollowing(user.id)"
+              >
+                跟隨
+              </button>
             </div>
 
             <p class="member-description m-0" style="font-size: 0.8rem">
-              At vero eos et accusamus et iusto odio dignissimos ducimus qui
-              blanditiis praesentium voluptatum deleniti.
-            </p>
-          </div>
-        </div>
-
-        <div
-          class="members p-2 d-flex"
-          style="border-bottom: 2px #dee2e6 solid"
-        >
-          <div class="member-pic pt-2 mr-2">
-            <img
-              src="../assets/icon/Icon.png"
-              alt="member-pic"
-              style="width: 40px; height: 40px"
-            />
-          </div>
-
-          <div class="member-data">
-            <div class="d-flex justify-content-between align-items-center">
-              <div class="member d-flex flex-column">
-                <span class="member-name" style="font-weight: bold">Laure</span>
-                <small class="member-account">@LaureBill</small>
-              </div>
-
-              <button class="follow-btn btn">跟隨</button>
-              <button class="following-btn btn">正在跟隨</button>
-            </div>
-
-            <p class="member-description m-0" style="font-size: 0.8rem">
-              At vero eos et accusamus et iusto odio dignissimos ducimus qui
-              blanditiis praesentium voluptatum deleniti.
+              {{ user.introduction }}
             </p>
           </div>
         </div>
       </div>
 
       <div class="col-3 pr-0 pl-2 pt-2">
-        <FollowWho />
+        <FollowWho
+          :follow-data="followData"
+          v-on:addMark="addFollowMark"
+          v-on:removeMark="removeFollowMark"
+        />
       </div>
     </div>
   </div>
@@ -101,11 +96,132 @@
 <script>
 import SideBar from "../components/SideBar";
 import FollowWho from "../components/FollowWho";
+import { Toast } from "../utils/helpers";
+import userAPI from "../apis/users";
 
 export default {
   components: {
     SideBar,
     FollowWho,
+  },
+
+  data() {
+    return {
+      userId: this.$route.params.userId
+        ? this.$route.params.userId
+        : this.$store.state.currentUser.id,
+      followData: [],
+      followersClicked: true,
+      followingsClicked: false,
+    };
+  },
+
+  created() {
+    this.followersOrfollowings();
+    this.followersClicked
+      ? this.fetchFollowers(this.userId)
+      : this.fetchFollowings(this.userId);
+  },
+
+  methods: {
+    async fetchFollowers(id) {
+      try {
+        const { data } = await userAPI.getFollowers({ userId: id });
+        if (data.length === 0) {
+          throw new Error();
+        }
+
+        this.followersClicked = true;
+        this.followingsClicked = false;
+        this.followData = data;
+      } catch (error) {
+        Toast.fire({
+          icon: "error",
+          title: "無法取得資料，請稍後再試！",
+        });
+      }
+    },
+
+    async fetchFollowings(id) {
+      try {
+        const { data } = await userAPI.getFollowings({ userId: id });
+        if (data.length === 0) {
+          throw new Error();
+        }
+
+        this.followersClicked = false;
+        this.followingsClicked = true;
+        this.followData = data;
+      } catch (error) {
+        Toast.fire({
+          icon: "error",
+          title: "無法取得資料，請稍後再試！",
+        });
+      }
+    },
+
+    async addFollowing(id) {
+      try {
+        const { data } = await userAPI.addFollowing({ id });
+        if (data.status !== "success") {
+          throw new Error(data.message);
+        }
+
+        this.followData.map((user) => {
+          if (user.id === id) {
+            user.isFollowing = true;
+          }
+        });
+      } catch (error) {
+        Toast.fire({
+          icon: "error",
+          title: "無法採取此動作，請稍後再試！",
+        });
+      }
+    },
+
+    async removeFollowing(id) {
+      try {
+        const { data } = await userAPI.removeFollowing({ id });
+        if (data.status !== "success") {
+          throw new Error(data.message);
+        }
+
+        this.followData.map((user) => {
+          if (user.id === id) {
+            user.isFollowing = false;
+          }
+        });
+      } catch (error) {
+        Toast.fire({
+          icon: "error",
+          title: "無法採取此動作，請稍後再試！",
+        });
+      }
+    },
+
+    async followersOrfollowings() {
+      if (this.$route.path.split("/").includes("followings")) {
+        this.followersClicked = false;
+        this.followingsClicked = true;
+      }
+    },
+
+    addFollowMark(id) {
+      this.followData.map((user) => {
+        if (user.id === id) {
+          user.isFollowing = true;
+        }
+      });
+    },
+
+    removeFollowMark(id) {
+      this.followData.map((user) => {
+        if (user.id === id) {
+          user.isFollowing = false;
+        }
+      });
+    },
   },
 };
 </script>
@@ -114,15 +230,6 @@ export default {
 .title {
   text-align: start;
   position: relative;
-  bottom: 8px;
-}
-.user-name {
-  font-weight: bold;
-}
-.tweet-numbers {
-  font-size: 0.5rem;
-  position: absolute;
-  top: 25px;
 }
 
 .follower,
@@ -133,8 +240,11 @@ export default {
   font-weight: bold;
   color: darkgray;
 }
-.firstClicked,
-.clicking {
+.follower:hover,
+.following:hover {
+  cursor: pointer;
+}
+.firstClicked {
   color: #ff6600;
   border-bottom: 2px #ff6600 solid;
 }
@@ -159,7 +269,6 @@ export default {
   padding: 5px;
 }
 .following-btn {
-  display: none;
   border-radius: 20px;
   color: white;
   background-color: #ff6600;

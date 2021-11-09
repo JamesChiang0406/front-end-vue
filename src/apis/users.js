@@ -18,7 +18,7 @@ export default {
   },
 
   getRecommendList() {
-    return apiHelper.get('/followships')
+    return apiHelper.get('/recommends')
   },
 
   addFollowing({ id }) {
@@ -27,5 +27,13 @@ export default {
 
   removeFollowing({ id }) {
     return apiHelper.delete(`/followships/${id}`)
+  },
+
+  getFollowers({ userId }) {
+    return apiHelper.get(`/followers/${userId}`)
+  },
+
+  getFollowings({ userId }) {
+    return apiHelper.get(`/followings/${userId}`)
   }
 }
