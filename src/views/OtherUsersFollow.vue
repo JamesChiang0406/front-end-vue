@@ -117,7 +117,7 @@ export default {
 
   data() {
     return {
-      userId: this.$store.state.currentUser.id,
+      userId: this.$route.params.id,
       followData: [],
       followersClicked: true,
       followingsClicked: false,

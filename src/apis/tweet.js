@@ -23,5 +23,9 @@ export default {
 
   unlikeTweet({ tweetId }) {
     return apiHelper.delete(`/tweets/${tweetId}/like`)
+  },
+
+  getUserTweets({ userId }) {
+    return apiHelper.get(`/tweets/others/${userId}`)
   }
 }

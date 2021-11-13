@@ -119,6 +119,9 @@ export default {
     async fetchUser({ userId }) {
       try {
         const { data } = await userAPI.getUser({ userId });
+        if (!data) {
+          throw new Error();
+        }
 
         this.account = data.account;
         this.name = data.name;

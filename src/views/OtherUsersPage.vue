@@ -50,25 +50,49 @@
             {{ user.introduction }}
           </p>
 
-          <div class="following-followers d-flex">
+          <div class="followings-followers d-flex">
             <div class="mr-3">
-              <router-link to="/user/self/following" class="following">
-                <span>34個跟隨中</span>
+              <router-link
+                :to="{ name: 'other-user-follower', params: { id: this.id } }"
+                class="followers"
+              >
+                <span>{{ user.followerCount }}位跟隨者</span>
               </router-link>
             </div>
 
             <div>
-              <router-link to="/user/self/follower" class="followers">
-                <span>59位跟隨者</span>
+              <router-link
+                :to="{ name: 'other-user-following', params: { id: this.id } }"
+                class="followings"
+              >
+                <span>{{ user.followingCount }}個跟隨中</span>
               </router-link>
             </div>
           </div>
         </div>
 
         <div class="show-btns d-flex justify-content-start border-bottom">
-          <router-link class="firstClicked" to="">推文</router-link>
-          <router-link class="" to="">推文與回覆</router-link>
-          <router-link class="" to="">喜歡的內容</router-link>
+          <div
+            class="changeArea"
+            :class="{ firstClicked: isTweetsArea }"
+            @click.stop.prevent="fetchTweets()"
+          >
+            推文
+          </div>
+          <div
+            class="changeArea"
+            :class="{ firstClicked: isRepliedArea }"
+            @click.stop.prevent="fetchReplies(id)"
+          >
+            推文與回覆
+          </div>
+          <div
+            class="changeArea"
+            :class="{ firstClicked: isLikedArea }"
+            @click.stop.prevent="fetchLikedTweets(id)"
+          >
+            喜歡的內容
+          </div>
         </div>
 
         <div
@@ -103,6 +127,18 @@
                 >@{{ tweet.user.account }} ‧ 3小時</span
               >
             </div>
+            <span style="font-size: 0.75em" v-if="isRepliedArea"
+              >回覆給
+              <router-link
+                class="repliedArea"
+                :to="{
+                  name: 'other-user',
+                  params: { id: tweet.repliedUserId },
+                }"
+              >
+                @{{ tweet.repliedUserAccount }}
+              </router-link>
+            </span>
 
             <div
               class="tweet"
@@ -114,7 +150,10 @@
               </p>
             </div>
 
-            <div class="icon-area d-flex justify-content-start">
+            <div
+              class="icon-area d-flex justify-content-start"
+              v-if="iconSwitch"
+            >
               <div class="comments" style="margin-right: 30px">
                 <router-link to="" style="margin-right: 10px">
                   <img src="../assets/icon/reply_icon.svg" alt="comment-icon" />
@@ -124,20 +163,24 @@
 
               <div class="likes">
                 <img
-                  v-if="isLiked"
+                  v-if="tweet.isUserLiked"
                   src="../assets/icon/like_icon_active.svg"
                   alt="like-icon"
                   style="margin-right: 10px; width: 13px; height: 13px"
+                  @click.stop.prevent="unlikeThisTweet(tweet.id)"
                 />
                 <img
                   v-else
                   src="../assets/icon/like_icon.svg"
                   alt="like-icon"
                   style="margin-right: 10px"
+                  @click.stop.prevent="likeThisTweet(tweet.id)"
                 />
-                <small :class="{ isActived: isLiked }">{{
-                  tweet.likedCount
-                }}</small>
+                <small
+                  :class="{ isActived: tweet.isUserLiked }"
+                  style="text-decoration-line: none"
+                  >{{ tweet.likedCount }}</small
+                >
               </div>
             </div>
           </div>
@@ -173,9 +216,12 @@ export default {
   data() {
     return {
       id: this.$route.params.id,
-      isLiked: false,
       user: {},
       tweets: [],
+      isTweetsArea: true,
+      isRepliedArea: false,
+      isLikedArea: false,
+      iconSwitch: true,
     };
   },
 
@@ -185,9 +231,9 @@ export default {
   },
 
   beforeRouteUpdate(to, from, next) {
-    this.id = to.params;
-    const { id } = to.params;
-    this.fetchUser({ userId: id });
+    this.id = to.params.id;
+    this.fetchUser({ userId: this.id });
+    this.fetchTweets();
     next();
   },
 
@@ -214,12 +260,121 @@ export default {
 
     async fetchTweets() {
       try {
-        const { data } = await tweetAPI.getTweets();
+        this.isTweetsArea = true;
+        this.isRepliedArea = false;
+        this.isLikedArea = false;
+        this.iconSwitch = true;
+
+        const { data } = await tweetAPI.getUserTweets({ userId: this.id });
+        if (data.status === "error") {
+          throw new Error(data.message);
+        }
+
         this.tweets = data;
+        this.tweets = this.tweets.filter((tweet) => tweet.UserId === this.id);
+        if (this.tweets.length === 0) {
+          Toast.fire({
+            icon: "warning",
+            title: "此用戶並無貼文！",
+          });
+        }
       } catch (error) {
         Toast.fire({
           icon: "error",
           title: "無法取得資料，請稍後再試！",
+        });
+      }
+    },
+
+    async fetchLikedTweets(userId) {
+      try {
+        this.isTweetsArea = false;
+        this.isRepliedArea = false;
+        this.isLikedArea = true;
+        this.iconSwitch = true;
+
+        const { data } = await tweetAPI.getUserTweets({ userId });
+        if (!data) {
+          throw new Error();
+        }
+
+        this.tweets = data;
+        this.tweets = this.tweets.filter((tweet) => tweet.isLiked === true);
+        if (this.tweets.length === 0) {
+          Toast.fire({
+            icon: "warning",
+            title: "此用戶無喜歡的推文！",
+          });
+        }
+      } catch (error) {
+        Toast.fire({
+          icon: "error",
+          title: "無法取得資料，請稍後再試！",
+        });
+      }
+    },
+
+    async fetchReplies(userId) {
+      try {
+        this.isTweetsArea = false;
+        this.isLikedArea = false;
+        this.iconSwitch = false;
+        const { data } = await tweetAPI.getReplies({ userId });
+
+        this.tweets = data;
+        this.isRepliedArea = true;
+        if (this.tweets.length === 0) {
+          Toast.fire({
+            icon: "warning",
+            title: "此用文無回覆的貼文！",
+          });
+        }
+      } catch (error) {
+        Toast.fire({
+          icon: "error",
+          title: "無法取得資料，請稍後再試！",
+        });
+      }
+    },
+
+    async likeThisTweet(tweetId) {
+      try {
+        const { data } = await tweetAPI.likeTweet({ tweetId });
+        if (data.status === "error") {
+          throw new Error(data.message);
+        }
+
+        this.tweets.map((tweet) => {
+          if (tweet.id === tweetId) {
+            tweet.isUserLiked = true;
+            tweet.likedCount += 1;
+          }
+        });
+      } catch (error) {
+        Toast.fire({
+          icon: "error",
+          title: "無法操作，請稍後再試！",
+        });
+      }
+    },
+
+    async unlikeThisTweet(tweetId) {
+      try {
+        const { data } = await tweetAPI.unlikeTweet({ tweetId });
+        if (data.status === "error") {
+          throw new Error(data.message);
+        }
+
+        this.tweets.map((tweet) => {
+          if (tweet.id === tweetId) {
+            tweet.isUserLiked = false;
+            tweet.likedCount -= 1;
+          }
+        });
+      } catch (error) {
+        Toast.fire({
+          icon: "error",
+          title: "無法操作，請稍後再試！",
         });
       }
     },
@@ -277,13 +432,21 @@ body {
   left: -1px;
   color: darkgray;
 }
-
-a {
+a,
+.changeArea {
   width: 23%;
   padding: 10px 0;
   text-decoration-line: none;
   color: #2e2e2e;
   font-size: 16px;
+  font-weight: bolder;
+}
+.changeArea:hover {
+  cursor: pointer;
+}
+.repliedArea:hover {
+  cursor: pointer;
+  color: crimson;
 }
 
 .firstClicked,
@@ -312,13 +475,13 @@ a {
 }
 
 a,
-.following,
+.followings,
 .followers,
 .user-name {
   font-weight: bold;
 }
 
-.following,
+.followings,
 .followers,
 .tweet,
 .follower-account,
@@ -336,7 +499,6 @@ a,
 .comments:hover,
 .likes:hover,
 .isActived {
-  text-decoration-line: underline;
   color: crimson;
 }
 

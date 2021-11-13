@@ -82,7 +82,7 @@
           </div>
           <div
             class="changeArea"
-            :class="{ firstClicked: isLikeArea }"
+            :class="{ firstClicked: isLikedArea }"
             @click.stop.prevent="fetchLikedTweets()"
           >
             喜歡的內容
@@ -224,7 +224,7 @@ export default {
       tweets: [],
       isTweetsArea: true,
       isRepliedArea: false,
-      isLikeArea: false,
+      isLikedArea: false,
       iconSwitch: true,
     };
   },
@@ -245,6 +245,9 @@ export default {
     async fetchUser({ userId }) {
       try {
         const { data } = await userAPI.getUser({ userId });
+        if (!data) {
+          throw new Error();
+        }
 
         this.user = data;
       } catch (error) {
@@ -307,8 +310,8 @@ export default {
         this.iconSwitch = true;
 
         const { data } = await tweetAPI.getTweets();
-        if (data.status === "error") {
-          throw new Error(data.message);
+        if (!data) {
+          throw new Error();
         }
 
         this.tweets = data;
@@ -417,14 +420,7 @@ body {
   color: darkgray;
 }
 
-a {
-  width: 23%;
-  padding: 10px 0;
-  text-decoration-line: none;
-  color: #2e2e2e;
-  font-size: 16px;
-}
-
+a,
 .changeArea {
   width: 23%;
   padding: 10px 0;
@@ -464,7 +460,7 @@ a {
 .repliedArea:hover {
   color: crimson;
   cursor: pointer;
-  text-decoration-line: underline;
+  text-decoration-line: none;
 }
 
 a,

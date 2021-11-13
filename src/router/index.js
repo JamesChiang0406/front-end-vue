@@ -62,6 +62,18 @@ const routes = [
     beforeEnter: authIsUser
   },
   {
+    path: '/user/:id/followers',
+    name: 'other-user-follower',
+    component: () => import('../views/OtherUsersFollow.vue'),
+    beforeEnter: authIsUser
+  },
+  {
+    path: '/user/:id/followings',
+    name: 'other-user-following',
+    component: () => import('../views/OtherUsersFollow.vue'),
+    beforeEnter: authIsUser
+  },
+  {
     path: '/setting',
     name: 'setting',
     component: () => import('../views/Setting.vue'),
