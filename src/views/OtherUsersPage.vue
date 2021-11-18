@@ -222,6 +222,7 @@ export default {
       isRepliedArea: false,
       isLikedArea: false,
       iconSwitch: true,
+      errMsg: "",
     };
   },
 
@@ -244,7 +245,7 @@ export default {
         params: { id },
       });
     },
-
+    // 檢查其它使用者的跟隨頁面及其功能
     async fetchUser({ userId }) {
       try {
         const { data } = await userAPI.getUser({ userId });
@@ -267,7 +268,7 @@ export default {
 
         const { data } = await tweetAPI.getUserTweets({ userId: this.id });
         if (data.status === "error") {
-          throw new Error(data.message);
+          throw new Error();
         }
 
         this.tweets = data;
@@ -275,7 +276,7 @@ export default {
         if (this.tweets.length === 0) {
           Toast.fire({
             icon: "warning",
-            title: "此用戶並無貼文！",
+            title: "無相關資料，請重新確認！",
           });
         }
       } catch (error) {
@@ -294,7 +295,7 @@ export default {
         this.iconSwitch = true;
 
         const { data } = await tweetAPI.getUserTweets({ userId });
-        if (!data) {
+        if (data.status === "error") {
           throw new Error();
         }
 
@@ -303,7 +304,7 @@ export default {
         if (this.tweets.length === 0) {
           Toast.fire({
             icon: "warning",
-            title: "此用戶無喜歡的推文！",
+            title: "無相關資料，請重新確認！",
           });
         }
       } catch (error) {
@@ -320,19 +321,18 @@ export default {
         this.isLikedArea = false;
         this.iconSwitch = false;
         const { data } = await tweetAPI.getReplies({ userId });
+        if (data.status === "error") {
+          this.errMsg = data.message;
+          throw new Error();
+        }
 
         this.tweets = data;
         this.isRepliedArea = true;
-        if (this.tweets.length === 0) {
-          Toast.fire({
-            icon: "warning",
-            title: "此用文無回覆的貼文！",
-          });
-        }
       } catch (error) {
+        this.isRepliedArea = true;
         Toast.fire({
-          icon: "error",
-          title: "無法取得資料，請稍後再試！",
+          icon: "warning",
+          title: this.errMsg,
         });
       }
     },

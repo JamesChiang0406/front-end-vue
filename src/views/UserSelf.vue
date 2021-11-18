@@ -295,6 +295,7 @@ export default {
         this.tweets = data;
         this.isRepliedArea = true;
       } catch (error) {
+        this.isRepliedArea = true;
         Toast.fire({
           icon: "error",
           title: "無法獲得資料，請稍後再試！",

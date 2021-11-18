@@ -71,7 +71,7 @@
 
               <button
                 class="following-btn btn"
-                v-if="user.isFollowing"
+                v-if="user.isUserFollowing"
                 @click.stop.prevent="removeFollowing(user.id)"
               >
                 正在跟隨

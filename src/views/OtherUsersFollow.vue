@@ -71,7 +71,7 @@
 
               <button
                 class="following-btn btn"
-                v-if="user.isFollowing"
+                v-if="user.isUserFollowing"
                 @click.stop.prevent="removeFollowing(user.id)"
               >
                 正在跟隨
@@ -152,17 +152,24 @@ export default {
 
     async fetchFollowers(id) {
       try {
+        // 狀態切換
+        this.followersClicked = true;
+        this.followingsClicked = false;
+
+        // 獲取資料 & 錯誤處理
         const { data } = await userAPI.getFollowers({ userId: id });
-        if (data.length === 0) {
+        if (data.status === "error") {
+          throw new Error();
+        }
+
+        // 呈現資料 & 錯誤處理
+        this.followData = data;
+        if (this.followData.length === 0) {
           Toast.fire({
             icon: "warning",
             title: "此帳戶無跟隨者資料！",
           });
         }
-
-        this.followersClicked = true;
-        this.followingsClicked = false;
-        this.followData = data;
       } catch (error) {
         Toast.fire({
           icon: "error",
@@ -173,17 +180,24 @@ export default {
 
     async fetchFollowings(id) {
       try {
+        // 狀態切換
+        this.followersClicked = false;
+        this.followingsClicked = true;
+
+        // 獲取資料 & 錯誤處理
         const { data } = await userAPI.getFollowings({ userId: id });
-        if (data.length === 0) {
+        if (data.status === "error") {
+          throw new Error();
+        }
+
+        // 呈現資料 & 錯誤處理
+        this.followData = data;
+        if (this.followData.length === 0) {
           Toast.fire({
             icon: "warning",
             title: "此帳戶無跟隨中的資料",
           });
         }
-
-        this.followersClicked = false;
-        this.followingsClicked = true;
-        this.followData = data;
       } catch (error) {
         Toast.fire({
           icon: "error",
