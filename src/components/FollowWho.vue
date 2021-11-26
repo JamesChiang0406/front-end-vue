@@ -64,6 +64,12 @@ export default {
     followData: {
       require: false,
     },
+    addWho: {
+      require: false,
+    },
+    removeWho: {
+      require: false,
+    },
   },
 
   data() {
@@ -76,6 +82,28 @@ export default {
 
   created() {
     this.fetchRecommendList();
+  },
+
+  watch: {
+    addWho: function () {
+      if (this.addWho !== -1) {
+        this.showData.map((user) => {
+          if (user.id === this.addWho) {
+            user.isFollowing = true;
+          }
+        });
+      }
+    },
+
+    removeWho: function () {
+      if (this.removeWho !== -1) {
+        this.showData.map((user) => {
+          if (user.id === this.removeWho) {
+            user.isFollowing = false;
+          }
+        });
+      }
+    },
   },
 
   methods: {

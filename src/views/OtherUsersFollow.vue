@@ -95,6 +95,8 @@
       <div class="col-3 pr-0 pl-2 pt-2">
         <FollowWho
           :follow-data="followData"
+          :add-who="addWho"
+          :remove-who="removeWho"
           v-on:addMark="addFollowMark"
           v-on:removeMark="removeFollowMark"
         />
@@ -122,6 +124,8 @@ export default {
       followersClicked: true,
       followingsClicked: false,
       userName: "",
+      addWho: -1,
+      removeWho: -1,
     };
   },
 
@@ -215,9 +219,11 @@ export default {
 
         this.followData.map((user) => {
           if (user.id === id) {
-            user.isFollowing = true;
+            user.isUserFollowing = true;
           }
         });
+        this.addWho = id;
+        this.removeWho = -1;
       } catch (error) {
         Toast.fire({
           icon: "error",
@@ -235,9 +241,11 @@ export default {
 
         this.followData.map((user) => {
           if (user.id === id) {
-            user.isFollowing = false;
+            user.isUserFollowing = false;
           }
         });
+        this.removeWho = id;
+        this.addWho = -1;
       } catch (error) {
         Toast.fire({
           icon: "error",

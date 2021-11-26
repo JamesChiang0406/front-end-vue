@@ -27,5 +27,9 @@ export default {
 
   getUserTweets({ userId }) {
     return apiHelper.get(`/tweets/others/${userId}`)
+  },
+
+  getTweet({ tweetId }) {
+    return apiHelper.get(`/tweets/${tweetId}`)
   }
 }

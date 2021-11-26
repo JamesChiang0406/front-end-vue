@@ -15,9 +15,11 @@
 
         <div class="tweet-area d-flex flex-column">
           <div class="tweeter-profile d-flex px-3 my-2">
-            <router-link to="/user/1">
+            <router-link
+              :to="{ name: 'other-user', params: { id: tweet.UserId } }"
+            >
               <img
-                src="../assets/icon/Icon.png"
+                :src="tweet.user.avatar"
                 alt="avatar-img"
                 style="
                   width: 40px;
@@ -30,16 +32,14 @@
             </router-link>
 
             <div class="name-account d-flex justify-content-center flex-column">
-              <span class="follower-name fw-bold">Mr Denny's</span>
-              <small class="follower-account">@mrdennys</small>
+              <span class="follower-name fw-bold">{{ tweet.user.name }}</span>
+              <small class="follower-account">@{{ tweet.user.account }}</small>
             </div>
           </div>
 
           <div class="article px-3">
             <p class="mb-1">
-              At vero eos et accusamus et iusto odio dignissimos ducimus qui
-              blanditiis praesentium voluptatum deleniti. i amdf aodfj dlafjsf,
-              sjfaf afjsdl asljaf aslfjl
+              {{ tweet.description }}
             </p>
           </div>
 
@@ -50,13 +50,13 @@
           <div class="replys-likes d-flex flex-column">
             <div class="numbers d-flex px-2 py-1">
               <div class="mr-2">
-                <span class="reply-numbers">34 </span>
-                <span>回覆</span>
+                <span class="like-numbers">{{ tweet.likedCount }} </span>
+                <span>喜歡</span>
               </div>
 
               <div>
-                <span class="like-numbers">808 </span>
-                <span>喜歡次數</span>
+                <span class="reply-numbers">{{ tweet.repliedCount }} </span>
+                <span>回覆</span>
               </div>
             </div>
 
@@ -64,22 +64,28 @@
               <img
                 src="../assets/icon/reply_icon.svg"
                 alt="reply-icon"
-                style="width: 25px; height: 25px; margin-right: 110px"
+                style="width: 17px; height: 17px; margin-right: 110px"
               />
               <img
                 src="../assets/icon/like_icon.svg"
                 alt="like-icon"
-                style="width: 25px; height: 25px"
+                style="width: 17px; height: 17px"
               />
             </div>
           </div>
         </div>
 
-        <div class="replys d-flex py-2 px-3">
+        <div
+          class="replys d-flex py-2 px-3"
+          v-for="reply in tweet.tweetReplies"
+          :key="reply.id"
+        >
           <div class="image-area pt-2" style="margin-right: 10px">
-            <router-link to="/user/1">
+            <router-link
+              :to="{ name: 'other-user', params: { id: reply.User.id } }"
+            >
               <img
-                src="../assets/icon/Icon.png"
+                :src="reply.User.avatar"
                 alt="icon"
                 style="width: 40px; height: 40px"
               />
@@ -90,58 +96,25 @@
             <div
               class="profile d-flex justify-content-start align-items-center"
             >
-              <span class="follower-name" style="margin-right: 10px"
-                >Mary Jane</span
+              <span class="follower-name" style="margin-right: 10px">{{
+                reply.User.name
+              }}</span>
+              <span class="follower-account"
+                >@{{ reply.User.account }} ‧ 13小時</span
               >
-              <span class="follower-account">@mjjane ‧ 13小時</span>
             </div>
 
             <div class="reply-to">
               <span style="font-size: 15px; margin-right: 3px">回覆</span>
-              <router-link to="/user/1" style="font-size: 15px"
-                >@apple</router-link
+              <router-link
+                :to="{ name: 'other-user', params: { id: tweet.UserId } }"
+                style="font-size: 15px"
+                >@{{ tweet.user.account }}</router-link
               >
             </div>
 
             <div class="tweet">
-              <p class="m-0">Great~</p>
-            </div>
-          </div>
-        </div>
-
-        <div class="replys d-flex py-2 px-3">
-          <div class="image-area pt-2" style="margin-right: 10px">
-            <router-link to="/user/1">
-              <img
-                src="../assets/icon/Icon.png"
-                alt="icon"
-                style="width: 40px; height: 40px"
-              />
-            </router-link>
-          </div>
-
-          <div class="text-area d-flex flex-column flex-wrap">
-            <div
-              class="profile d-flex justify-content-start align-items-center"
-            >
-              <span class="follower-name" style="margin-right: 10px"
-                >Squishy Tom</span
-              >
-              <span class="follower-account">@sushiTom ‧ 13小時</span>
-            </div>
-
-            <div class="reply-to">
-              <span style="font-size: 15px; margin-right: 3px">回覆</span>
-              <router-link to="/user/1" style="font-size: 15px"
-                >@apple</router-link
-              >
-            </div>
-
-            <div class="tweet">
-              <p class="m-0">
-                At vero eos et accusamus et iusto odio dignissimos ducimus qui
-                blanditiis praesentium voluptatum deleniti.
-              </p>
+              <p class="m-0">{{ reply.comment }}</p>
             </div>
           </div>
         </div>
@@ -162,12 +135,52 @@
 import SideBar from "../components/SideBar";
 import FollowWho from "../components/FollowWho";
 import ReplyingForm from "../components/ReplyingForm";
+import tweetAPI from "../apis/tweet";
+import { Toast } from "../utils/helpers";
 
 export default {
   components: {
     SideBar,
     FollowWho,
     ReplyingForm,
+  },
+
+  data() {
+    return {
+      tweetId: this.$route.params.id,
+      tweet: {
+        UserId: -1,
+        user: {
+          account: "",
+          avatar: "",
+          name: "",
+        },
+
+        tweetReplies: {},
+      },
+    };
+  },
+
+  created() {
+    this.fetchTweets();
+  },
+
+  methods: {
+    async fetchTweets() {
+      try {
+        const { data } = await tweetAPI.getTweet({ tweetId: this.tweetId });
+        if (data.status === "error") {
+          throw new Error();
+        }
+
+        this.tweet = data;
+      } catch (error) {
+        Toast.fire({
+          icon: "error",
+          title: "此推文不存在，請重新查詢！",
+        });
+      }
+    },
   },
 };
 </script>

@@ -245,7 +245,7 @@ export default {
         params: { id },
       });
     },
-    // 檢查其它使用者的跟隨頁面及其功能
+
     async fetchUser({ userId }) {
       try {
         const { data } = await userAPI.getUser({ userId });
@@ -261,18 +261,23 @@ export default {
 
     async fetchTweets() {
       try {
+        // 狀態切換
         this.isTweetsArea = true;
         this.isRepliedArea = false;
         this.isLikedArea = false;
         this.iconSwitch = true;
 
+        // 取得資料 & 錯誤處理
         const { data } = await tweetAPI.getUserTweets({ userId: this.id });
         if (data.status === "error") {
           throw new Error();
         }
 
+        // 佈署資料 & 錯誤處理
         this.tweets = data;
-        this.tweets = this.tweets.filter((tweet) => tweet.UserId === this.id);
+        this.tweets = this.tweets.filter(
+          (tweet) => tweet.UserId === Number(this.id)
+        );
         if (this.tweets.length === 0) {
           Toast.fire({
             icon: "warning",

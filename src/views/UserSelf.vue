@@ -260,18 +260,27 @@ export default {
 
     async fetchTweets() {
       try {
+        // 狀態切換
         this.iconSwitch = true;
         this.isTweetsArea = true;
         this.isRepliedArea = false;
-        this.isLikeArea = false;
+        this.isLikedArea = false;
 
+        // 取得資料 & 錯誤處理
         const { data } = await tweetAPI.getTweets();
         if (data.status === "error") {
           throw new Error(data.message);
         }
 
+        // 佈署資料 & 錯誤處理
         this.tweets = data;
         this.tweets = this.tweets.filter((tweet) => tweet.UserId === this.id);
+        if (this.tweets.length === 0) {
+          Toast.fire({
+            icon: "warning",
+            title: "無相關資料，請重新確認！",
+          });
+        }
       } catch (error) {
         Toast.fire({
           icon: "error",
@@ -284,7 +293,7 @@ export default {
       try {
         this.iconSwitch = false;
         this.isTweetsArea = false;
-        this.isLikeArea = false;
+        this.isLikedArea = false;
 
         const userId = this.id;
         const { data } = await tweetAPI.getReplies({ userId });
@@ -307,7 +316,7 @@ export default {
       try {
         this.isTweetsArea = false;
         this.isRepliedArea = false;
-        this.isLikeArea = true;
+        this.isLikedArea = true;
         this.iconSwitch = true;
 
         const { data } = await tweetAPI.getTweets();
