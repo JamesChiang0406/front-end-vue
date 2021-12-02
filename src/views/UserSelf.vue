@@ -2,7 +2,7 @@
   <div class="container">
     <div class="row">
       <div class="col-3 px-4 pt-2">
-        <SideBar />
+        <SideBar page-name="profile" />
       </div>
 
       <div class="user-self col-6 p-0 border">

@@ -1,7 +1,7 @@
 <template>
   <div class="wrapper d-flex p-0">
     <div class="sidebar-area">
-      <SideBar />
+      <SideBar page-name="setting" />
     </div>
 
     <div class="setting-area">

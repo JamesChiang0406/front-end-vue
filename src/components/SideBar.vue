@@ -8,16 +8,18 @@
       <div class="link-area mt-3">
         <div class="home-page">
           <img
-            v-if="homeIsClicked"
+            v-if="pageIsHome"
+            class="switchToHere"
             src="../assets/icon/home_icon_active.png"
             alt="home-page"
           />
           <img v-else src="../assets/icon/home_icon.png" alt="home-page" />
 
           <router-link
-            v-if="homeIsClicked"
+            v-if="pageIsHome"
             to="/mainpage"
             style="color: #ff6600"
+            :class="{ switchToHere: pageIsHome }"
             >首頁</router-link
           >
           <router-link v-else to="/mainpage">首頁</router-link>
@@ -25,16 +27,18 @@
 
         <div class="profile">
           <img
-            v-if="profileIsClicked"
+            v-if="pageIsProfile"
+            class="switchToHere"
             src="../assets/icon/user_icon_active.png"
             alt="profile"
           />
           <img v-else src="../assets/icon/user_icon.png" alt="profile" />
 
           <router-link
-            v-if="profileIsClicked"
+            v-if="pageIsProfile"
             to="/user/self"
             style="color: #ff6600"
+            :class="{ switchToHere: pageIsProfile }"
             >個人資料</router-link
           >
           <router-link v-else to="/user/self">個人資料</router-link>
@@ -42,16 +46,18 @@
 
         <div class="setting">
           <img
-            v-if="settingIsClicked"
+            v-if="pageIsSetting"
+            class="switchToHere"
             src="../assets/icon/setting_icon_active.png"
             alt="setting"
           />
           <img v-else src="../assets/icon/setting_icon.png" alt="setting" />
 
           <router-link
-            v-if="settingIsClicked"
+            v-if="pageIsSetting"
             to="/setting"
             style="color: #ff6600"
+            :class="{ switchToHere: pageIsSetting }"
             >設定</router-link
           >
           <router-link v-else to="/setting">設定</router-link>
@@ -74,17 +80,47 @@
 
 <script>
 export default {
+  props: {
+    pageName: {
+      require: false,
+    },
+  },
+
   data() {
     return {
-      homeIsClicked: false,
-      profileIsClicked: false,
-      settingIsClicked: false,
+      pageIsHome: true,
+      pageIsProfile: false,
+      pageIsSetting: false,
     };
+  },
+
+  created() {
+    this.iconSwitch();
   },
 
   methods: {
     logout() {
       this.$store.commit("revokeAuthentication");
+    },
+
+    iconSwitch() {
+      if (this.pageName === "profile") {
+        this.pageIsProfile = true;
+        this.pageIsHome = false;
+        this.pageIsSetting = false;
+      } else if (this.pageName === "setting") {
+        this.pageIsSetting = true;
+        this.pageIsProfile = false;
+        this.pageIsHome = false;
+      } else if (this.pageName === "homePage") {
+        this.pageIsHome = true;
+        this.pageIsSetting = false;
+        this.pageIsProfile = false;
+      } else {
+        this.pageIsHome = false;
+        this.pageIsSetting = false;
+        this.pageIsProfile = false;
+      }
     },
   },
 };
@@ -113,6 +149,9 @@ a {
 }
 a:hover {
   color: #ff6600;
+}
+.switchToHere:hover {
+  cursor: default;
 }
 
 button {

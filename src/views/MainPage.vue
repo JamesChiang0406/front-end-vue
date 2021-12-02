@@ -2,7 +2,7 @@
   <div class="container">
     <div class="row mt-2">
       <div class="col-3 px-4">
-        <SideBar />
+        <SideBar page-name="homePage" />
       </div>
 
       <div class="main-area col-6">
