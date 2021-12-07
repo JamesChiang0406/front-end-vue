@@ -94,98 +94,109 @@
           v-for="tweet in tweets"
           :key="tweet.id"
         >
-          <div class="image-area pt-2" style="margin-right: 15px">
-            <router-link
-              :to="{ name: 'other-user', params: { id: tweet.UserId } }"
-            >
-              <img
-                :src="tweet.user.avatar"
-                alt="icon"
-                style="width: 40px; height: 40px"
-              />
-            </router-link>
-          </div>
-
-          <div class="tweets-area d-flex flex-wrap">
-            <div
-              class="profile d-flex justify-content-start align-items-center"
-            >
+          <div class="d-flex" style="width: 90%">
+            <div class="image-area pt-2" style="margin-right: 15px">
               <router-link
                 :to="{ name: 'other-user', params: { id: tweet.UserId } }"
-                class="follower-name d-flex align-items-center"
               >
-                <span>{{ tweet.user.name }}</span>
+                <img
+                  :src="tweet.user.avatar"
+                  alt="icon"
+                  style="width: 40px; height: 40px"
+                />
               </router-link>
-
-              <span class="follower-account"
-                >@{{ tweet.user.account }} ‧ 3小時</span
-              >
             </div>
 
-            <span style="font-size: 0.75rem" v-if="isRepliedArea"
-              >回覆給
-              <router-link
-                class="repliedArea"
-                :to="{
-                  name: 'other-user',
-                  params: { id: tweet.repliedUserId },
-                }"
-                >@{{ tweet.repliedUserAccount }}</router-link
+            <div class="tweets-area d-flex flex-wrap">
+              <div
+                class="profile d-flex justify-content-start align-items-center"
               >
-            </span>
-
-            <div
-              class="tweet"
-              style="text-align: start"
-              @click.stop.prevent="tweetPage(tweet.id)"
-            >
-              <p class="m-0">
-                {{ tweet.description }}
-              </p>
-            </div>
-
-            <div
-              class="icon-area d-flex justify-content-start"
-              v-if="iconSwitch"
-            >
-              <div class="comments" style="margin-right: 30px">
-                <router-link to="" style="margin-right: 5px">
-                  <img src="../assets/icon/reply_icon.svg" alt="comment-icon" />
+                <router-link
+                  :to="{ name: 'other-user', params: { id: tweet.UserId } }"
+                  class="follower-name d-flex align-items-center"
+                >
+                  <span>{{ tweet.user.name }}</span>
                 </router-link>
-                <small>{{ tweet.repliedCount }}</small>
+
+                <span class="follower-account"
+                  >@{{ tweet.user.account }} ‧ 3小時</span
+                >
               </div>
 
-              <div class="likes d-flex justify-content-start">
-                <div
-                  v-if="tweet.isLiked"
-                  style="margin-right: 5px"
-                  @click.stop.prevent="unlikeThisTweet(tweet.id)"
+              <span style="font-size: 0.75rem" v-if="isRepliedArea"
+                >回覆給
+                <router-link
+                  class="repliedArea"
+                  :to="{
+                    name: 'other-user',
+                    params: { id: tweet.repliedUserId },
+                  }"
+                  >@{{ tweet.repliedUserAccount }}</router-link
                 >
-                  <img
-                    src="../assets/icon/like_icon_active.svg"
-                    alt="like-icon"
-                    style="width: 13px; height: 13px"
-                  />
+              </span>
+
+              <div
+                class="tweet"
+                style="text-align: start"
+                @click.stop.prevent="tweetPage(tweet.id)"
+              >
+                <p class="m-0">
+                  {{ tweet.description }}
+                </p>
+              </div>
+
+              <div
+                class="icon-area d-flex justify-content-start"
+                v-if="iconSwitch"
+              >
+                <div class="comments" style="margin-right: 30px">
+                  <router-link to="" style="margin-right: 5px">
+                    <img
+                      src="../assets/icon/reply_icon.svg"
+                      alt="comment-icon"
+                    />
+                  </router-link>
+                  <small>{{ tweet.repliedCount }}</small>
                 </div>
 
-                <div
-                  v-else
-                  style="margin-right: 5px"
-                  @click.stop.prevent="likeThisTweet(tweet.id)"
-                >
-                  <img
-                    src="../assets/icon/like_icon.svg"
-                    alt="like-icon"
-                    style="width: 13px; height: 13px"
-                  />
-                </div>
+                <div class="likes d-flex justify-content-start">
+                  <div
+                    v-if="tweet.isLiked"
+                    style="margin-right: 5px"
+                    @click.stop.prevent="unlikeThisTweet(tweet.id)"
+                  >
+                    <img
+                      src="../assets/icon/like_icon_active.svg"
+                      alt="like-icon"
+                      style="width: 13px; height: 13px"
+                    />
+                  </div>
 
-                <div>
-                  <small :class="{ isActived: tweet.isLiked }">
-                    {{ tweet.likedCount }}
-                  </small>
+                  <div
+                    v-else
+                    style="margin-right: 5px"
+                    @click.stop.prevent="likeThisTweet(tweet.id)"
+                  >
+                    <img
+                      src="../assets/icon/like_icon.svg"
+                      alt="like-icon"
+                      style="width: 13px; height: 13px"
+                    />
+                  </div>
+
+                  <div>
+                    <small :class="{ isActived: tweet.isLiked }">
+                      {{ tweet.likedCount }}
+                    </small>
+                  </div>
                 </div>
               </div>
+            </div>
+          </div>
+
+          <div style="width: 10%; height: 30px" v-if="tweet.isUserTweet">
+            <div @click.stop.prevent="deleteTweet(tweet.id, tweet.UserId)">
+              <i class="fas fa-times del-btn"></i>
             </div>
           </div>
         </div>
@@ -275,6 +286,9 @@ export default {
         // 佈署資料 & 錯誤處理
         this.tweets = data;
         this.tweets = this.tweets.filter((tweet) => tweet.UserId === this.id);
+        this.tweets.forEach((tweet) => {
+          tweet.isUserTweet = this.$store.state.currentUser.id === tweet.UserId;
+        });
         if (this.tweets.length === 0) {
           Toast.fire({
             icon: "warning",
@@ -326,6 +340,9 @@ export default {
 
         this.tweets = data;
         this.tweets = this.tweets.filter((tweet) => tweet.isLiked === true);
+        this.tweets.forEach((tweet) => {
+          tweet.isUserTweet = this.$store.state.currentUser.id === tweet.UserId;
+        });
       } catch (error) {
         Toast.fire({
           icon: "error",
@@ -372,6 +389,47 @@ export default {
         Toast.fire({
           icon: "error",
           title: "無法操作，請稍後再試！",
+        });
+      }
+    },
+
+    deleteTweet(id, tweetUserId) {
+      try {
+        const userId = this.$store.state.currentUser.id;
+
+        if (userId !== tweetUserId) {
+          throw new Error("此動作未授權，請重新確認！");
+        } else {
+          // 刪除貼文前，提供確認視窗
+          Toast.fire({
+            icon: "warning",
+            title: "確定要刪除嗎？",
+            showConfirmButton: true,
+            showCancelButton: true,
+          }).then(async (result) => {
+            if (result.isConfirmed) {
+              const { data } = await tweetAPI.deleteTweet({ tweet_id: id });
+              if (data.status === "error") {
+                throw new Error(data.message);
+              }
+
+              Toast.fire({
+                icon: "success",
+                title: "推文刪除成功",
+              });
+              this.tweets = this.tweets.filter((tweet) => {
+                return tweet.id !== id;
+              });
+            } else {
+              return;
+            }
+          });
+        }
+      } catch (error) {
+        console.log(error);
+        Toast.fire({
+          icon: "error",
+          title: "無法刪除，請稍後再試！",
         });
       }
     },
@@ -471,6 +529,10 @@ a,
   color: crimson;
   cursor: pointer;
   text-decoration-line: none;
+}
+.del-btn:hover {
+  cursor: pointer;
+  color: #dc3545;
 }
 
 a,

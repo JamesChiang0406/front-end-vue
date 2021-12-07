@@ -60,7 +60,7 @@
           v-for="tweet in tweets"
           :key="tweet.id"
         >
-          <div class="d-flex" style="width: 80%">
+          <div class="d-flex" style="width: 90%">
             <div class="image-area pt-2" style="margin-right: 15px">
               <router-link
                 :to="{ name: 'other-user', params: { id: tweet.UserId } }"
@@ -121,11 +121,7 @@
             </div>
           </div>
 
-          <div
-            class="border"
-            style="width: 10%; height: 30px"
-            v-show="tweet.isUserTweet"
-          >
+          <div style="width: 10%; height: 30px" v-if="tweet.isUserTweet">
             <div @click.stop.prevent="deleteTweet(tweet.id, tweet.UserId)">
               <i class="fas fa-times del-btn"></i>
             </div>
@@ -230,24 +226,36 @@ export default {
       });
     },
 
-    async deleteTweet(id, tweetUserId) {
+    deleteTweet(id, tweetUserId) {
       try {
         const userId = this.$store.state.currentUser.id;
 
         if (userId !== tweetUserId) {
           throw new Error("此動作未授權，請重新確認！");
         } else {
-          const { data } = await tweetAPI.deleteTweet({ tweet_id: id });
-          if (data.status === "error") {
-            throw new Error(data.message);
-          }
-
+          // 刪除貼文前，提供確認視窗
           Toast.fire({
-            icon: "success",
-            title: "推文刪除成功",
-          });
-          this.tweets = this.tweets.filter((tweet) => {
-            return tweet.id !== id;
+            icon: "warning",
+            title: "確定要刪除嗎？",
+            showConfirmButton: true,
+            showCancelButton: true,
+          }).then(async (result) => {
+            if (result.isConfirmed) {
+              const { data } = await tweetAPI.deleteTweet({ tweet_id: id });
+              if (data.status === "error") {
+                throw new Error(data.message);
+              }
+
+              Toast.fire({
+                icon: "success",
+                title: "推文刪除成功",
+              });
+              this.tweets = this.tweets.filter((tweet) => {
+                return tweet.id !== id;
+              });
+            } else {
+              return;
+            }
           });
         }
       } catch (error) {
