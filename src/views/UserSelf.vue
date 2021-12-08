@@ -101,6 +101,7 @@
               >
                 <img
                   :src="tweet.user.avatar"
+                  class="avatar"
                   alt="icon"
                   style="width: 40px; height: 40px"
                 />
@@ -135,8 +136,14 @@
                 >
               </span>
 
+              <div class="reply" v-if="isRepliedArea" style="text-align: start">
+                <p class="m-0">
+                  {{ tweet.description }}
+                </p>
+              </div>
               <div
                 class="tweet"
+                v-else
                 style="text-align: start"
                 @click.stop.prevent="tweetPage(tweet.id)"
               >
@@ -511,11 +518,14 @@ a,
   border-bottom: 2px #e9e9e9 solid;
 }
 .other-tweets:hover {
-  cursor: pointer;
   background-color: #f5f8fa;
+}
+.tweet:hover {
+  cursor: pointer;
 }
 .profile,
 .tweet,
+.reply,
 .icon-area {
   width: 100%;
 }
@@ -545,6 +555,7 @@ a,
 .following,
 .followers,
 .tweet,
+.reply,
 .follower-account,
 .description {
   font-size: 0.8rem;
@@ -563,7 +574,7 @@ a,
   color: crimson;
 }
 
-.image-area:hover {
+.avatar:hover {
   opacity: 0.5;
 }
 
