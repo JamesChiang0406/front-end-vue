@@ -6,14 +6,10 @@
       </div>
 
       <div class="user-self col-6 p-0 border">
-        <div class="nav-bar d-flex align-items-center p-2">
-          <div
-            class="back-icon mr-4 d-flex align-items-center"
-            @click="$router.back()"
-          >
-            <i class="fas fa-arrow-left"></i>
-          </div>
-
+        <div
+          class="nav-bar d-flex align-items-center px-3 py-2"
+          style="margin-bottom: 3px"
+        >
           <div class="title d-flex flex-column">
             <span class="user-name">{{ user.name }}</span>
             <small class="tweet-numbers">{{ tweets.length }} 推文</small>
@@ -163,12 +159,11 @@
                 v-if="iconSwitch"
               >
                 <div class="comments" style="margin-right: 30px">
-                  <router-link to="" style="margin-right: 10px">
-                    <img
-                      src="../assets/icon/reply_icon.svg"
-                      alt="comment-icon"
-                    />
-                  </router-link>
+                  <img
+                    src="../assets/icon/reply_icon.svg"
+                    alt="comment-icon"
+                    style="margin-right: 10px"
+                  />
                   <small>{{ tweet.repliedCount }}</small>
                 </div>
 
@@ -566,10 +561,13 @@ a,
 .likes {
   color: darkgray;
 }
+.likes:hover {
+  cursor: pointer;
+  color: crimson;
+}
 
 .follower-name:hover,
 .comments:hover,
-.likes:hover,
 .isActived {
   color: crimson;
 }

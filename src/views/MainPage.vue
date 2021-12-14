@@ -67,6 +67,7 @@
               >
                 <img
                   :src="tweet.user.avatar"
+                  class="image"
                   alt="image"
                   style="width: 40px; height: 40px"
                 />
@@ -102,20 +103,46 @@
 
               <div class="icon-area d-flex justify-content-start">
                 <div class="comments" style="margin-right: 30px">
-                  <router-link to="" style="margin-right: 10px">
-                    <img
-                      src="../assets/icon/reply_icon.svg"
-                      alt="comment-icon"
-                    />
-                  </router-link>
+                  <img
+                    src="../assets/icon/reply_icon.svg"
+                    alt="comment-icon"
+                    style="width: 13px; height: 13px; margin-right: 5px"
+                  />
                   <small>{{ tweet.repliedCount }}</small>
                 </div>
 
-                <div class="likes">
-                  <router-link to="" style="margin-right: 10px">
-                    <img src="../assets/icon/like_icon.svg" alt="like-icon" />
-                  </router-link>
-                  <small>{{ tweet.likedCount }}</small>
+                <div class="likes d-flex">
+                  <div
+                    v-if="tweet.isLiked"
+                    class="isLiked"
+                    @click.stop.prevent="unlikeThisTweet(tweet.id)"
+                    style="margin-right: 5px"
+                  >
+                    <img
+                      src="../assets/icon/like_icon_active.svg"
+                      alt="like-icon"
+                      style="width: 13px; height: 13px"
+                    />
+                  </div>
+
+                  <div
+                    v-else
+                    @click.stop.prevent="likeThisTweet(tweet.id)"
+                    class="likeIcon"
+                    style="margin-right: 5px"
+                  >
+                    <img
+                      src="../assets/icon/like_icon.svg"
+                      alt="like-icon"
+                      style="width: 13px; height: 13px"
+                    />
+                  </div>
+
+                  <div>
+                    <small :class="{ isActived: tweet.isLiked }">
+                      {{ tweet.likedCount }}
+                    </small>
+                  </div>
                 </div>
               </div>
             </div>
@@ -266,6 +293,48 @@ export default {
         });
       }
     },
+
+    async likeThisTweet(tweetId) {
+      try {
+        const { data } = await tweetAPI.likeTweet({ tweetId });
+        if (data.status === "error") {
+          throw new Error(data.message);
+        }
+
+        this.tweets.map((tweet) => {
+          if (tweet.id === tweetId) {
+            tweet.isLiked = true;
+            tweet.likedCount += 1;
+          }
+        });
+      } catch (error) {
+        Toast.fire({
+          icon: "error",
+          title: "無法操作，請稍後再試！",
+        });
+      }
+    },
+
+    async unlikeThisTweet(tweetId) {
+      try {
+        const { data } = await tweetAPI.unlikeTweet({ tweetId });
+        if (data.status === "error") {
+          throw new Error(data.message);
+        }
+
+        this.tweets.map((tweet) => {
+          if (tweet.id === tweetId) {
+            tweet.isLiked = false;
+            tweet.likedCount -= 1;
+          }
+        });
+      } catch (error) {
+        Toast.fire({
+          icon: "error",
+          title: "無法操作，請稍後再試！",
+        });
+      }
+    },
   },
 };
 </script>
@@ -328,17 +397,26 @@ button {
   border-bottom: 2px #e9e9e9 solid;
 }
 .other-tweets:hover {
-  cursor: pointer;
   background-color: #f5f8fa;
 }
+.tweet-text:hover {
+  cursor: pointer;
+}
+
 .profile,
 .tweet-text,
 .icon-area {
   width: 100%;
 }
+.isActived {
+  color: crimson;
+}
+
+.isLiked:hover,
+.likeIcon:hover,
 .del-btn:hover {
   cursor: pointer;
-  color: #dc3545;
+  color: crimson;
 }
 
 .follower-name {
@@ -394,7 +472,7 @@ p {
   color: crimson;
 }
 
-.image-area:hover {
+.image:hover {
   opacity: 0.5;
 }
 </style>

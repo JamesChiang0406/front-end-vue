@@ -6,14 +6,10 @@
       </div>
 
       <div class="user-self col-6 p-0 border">
-        <div class="nav-bar d-flex align-items-center p-2">
-          <div
-            class="back-icon mr-4 d-flex align-items-center"
-            @click="$router.back()"
-          >
-            <i class="fas fa-arrow-left"></i>
-          </div>
-
+        <div
+          class="nav-bar d-flex align-items-center px-3 py-2"
+          style="margin-bottom: 3px"
+        >
           <div class="title d-flex flex-column">
             <span class="user-name">{{ user.name }}</span>
             <small class="tweet-numbers">{{ tweets.length }} 推文</small>
@@ -156,14 +152,16 @@
                 class="icon-area d-flex justify-content-start"
                 v-if="iconSwitch"
               >
-                <div class="comments" style="margin-right: 30px">
-                  <router-link to="" style="margin-right: 5px">
+                <div class="comments d-flex" style="margin-right: 30px">
+                  <div style="margin-right: 5px">
                     <img
                       src="../assets/icon/reply_icon.svg"
                       alt="comment-icon"
                     />
-                  </router-link>
-                  <small>{{ tweet.repliedCount }}</small>
+                  </div>
+                  <div>
+                    <small>{{ tweet.repliedCount }}</small>
+                  </div>
                 </div>
 
                 <div class="likes d-flex justify-content-start">
@@ -440,6 +438,8 @@ export default {
         });
       }
     },
+
+    // 主頁已完成，使用者頁面以及其它使用者頁面的留言和讚的圖示再調整一下。
   },
 };
 </script>
@@ -540,9 +540,11 @@ a,
   cursor: pointer;
   text-decoration-line: none;
 }
+.likes,
+.likes:hover,
 .del-btn:hover {
   cursor: pointer;
-  color: #dc3545;
+  color: crimson;
 }
 
 a,
@@ -569,7 +571,6 @@ a,
 
 .follower-name:hover,
 .comments:hover,
-.likes:hover,
 .isActived {
   color: crimson;
 }

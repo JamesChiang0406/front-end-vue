@@ -138,6 +138,7 @@ router.beforeEach(async (to, from, next) => {
   // 若token無效則轉入登入頁
   if (!isAuthenticated && !pathsWithoutAuthentication.includes(to.name)) {
     next('/signin')
+    return
   }
   // 若token有效則轉入主頁面
   if (isAuthenticated && pathsWithoutAuthentication.includes(to.name)) {
