@@ -49,28 +49,29 @@
 
           <div class="replys-likes d-flex flex-column">
             <div class="numbers d-flex px-2 py-1">
-              <div class="mr-2">
+              <div
+                v-if="tweet.isLiked"
+                class="likes isLiked"
+                style="margin-right: 15px"
+                @click.stop.prevent="unlikeThisTweet(tweet.id)"
+              >
+                <span class="like-numbers">{{ tweet.likedCount }} </span>
+                <span>喜歡</span>
+              </div>
+              <div
+                v-else
+                class="likes"
+                style="margin-right: 15px"
+                @click.stop.prevent="likeThisTweet(tweet.id)"
+              >
                 <span class="like-numbers">{{ tweet.likedCount }} </span>
                 <span>喜歡</span>
               </div>
 
-              <div>
-                <span class="reply-numbers">{{ tweet.repliedCount }} </span>
+              <div class="reply-numbers">
+                <span>{{ tweet.repliedCount }} </span>
                 <span>回覆</span>
               </div>
-            </div>
-
-            <div class="icon d-flex justify-content-start p-2">
-              <img
-                src="../assets/icon/reply_icon.svg"
-                alt="reply-icon"
-                style="width: 17px; height: 17px; margin-right: 110px"
-              />
-              <img
-                src="../assets/icon/like_icon.svg"
-                alt="like-icon"
-                style="width: 17px; height: 17px"
-              />
             </div>
           </div>
         </div>
@@ -181,6 +182,40 @@ export default {
         });
       }
     },
+
+    async likeThisTweet(tweetId) {
+      try {
+        const { data } = await tweetAPI.likeTweet({ tweetId });
+        if (data.status === "error") {
+          throw new Error(data.message);
+        }
+
+        this.tweet.isLiked = true;
+        this.tweet.likedCount += 1;
+      } catch (error) {
+        Toast.fire({
+          icon: "error",
+          title: "無法操作，請稍後再試！",
+        });
+      }
+    },
+
+    async unlikeThisTweet(tweetId) {
+      try {
+        const { data } = await tweetAPI.unlikeTweet({ tweetId });
+        if (data.message === "error") {
+          throw new Error(data.message);
+        }
+
+        this.tweet.isLiked = false;
+        this.tweet.likedCount -= 1;
+      } catch (error) {
+        Toast.fire({
+          icon: "error",
+          title: "無法操作，請稍後再試！",
+        });
+      }
+    },
   },
 };
 </script>
@@ -247,6 +282,15 @@ span {
 .reply-to,
 .tweet {
   text-align: start;
+}
+.isLiked {
+  color: crimson;
+}
+.likes:hover {
+  cursor: pointer;
+}
+.reply-numbers:hover {
+  color: crimson;
 }
 .replys,
 .title,
