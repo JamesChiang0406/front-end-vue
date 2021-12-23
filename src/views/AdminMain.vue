@@ -2,7 +2,7 @@
   <div class="container mr-0">
     <div class="row">
       <div class="col-2 p-0" style="height: 350px">
-        <AdminSideBar />
+        <AdminSideBar page-name="mainPage" />
       </div>
 
       <div class="tweets-list col-10 p-0">
@@ -12,25 +12,20 @@
 
         <div class="tweets d-flex p-2" v-for="tweet in tweets" :key="tweet.id">
           <div class="tweeter-pic pt-2 mr-2">
-            <router-link
-              :to="{ name: 'other-user', params: { id: tweet.UserId } }"
-            >
-              <img
-                :src="tweet.user.avatar"
-                alt="tweeter-pic"
-                style="width: 45px; height: 45px"
-              />
-            </router-link>
+            <img
+              :src="tweet.user.avatar"
+              alt="tweeter-pic"
+              style="width: 45px; height: 45px"
+            />
           </div>
 
           <div class="content">
             <div class="name-account">
-              <router-link
-                :to="{ name: 'other-user', params: { id: tweet.UserId } }"
+              <span
                 class="mr-2"
+                style="font-weight: bolder; color: slategrey"
+                >{{ tweet.user.name }}</span
               >
-                <span>{{ tweet.user.name }}</span>
-              </router-link>
 
               <small>@{{ tweet.user.account }}</small>
               <small> ‧ 10小時</small>
@@ -125,14 +120,6 @@ small {
   color: darkgray;
 }
 
-a {
-  color: black;
-  text-decoration-line: none;
-}
-a:hover {
-  color: #007bff;
-}
-
 p {
   margin: 0;
   font-size: 0.9rem;
@@ -144,6 +131,9 @@ p {
 }
 .tweets {
   border-bottom: 2px #dee2e6 solid;
+}
+.tweets:hover {
+  background-color: mistyrose;
 }
 
 .title {
@@ -157,10 +147,6 @@ p {
 
   text-align: start;
   font-weight: 900;
-}
-
-.tweeter-pic:hover {
-  opacity: 0.5;
 }
 
 .content {

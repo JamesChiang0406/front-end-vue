@@ -2,7 +2,7 @@
   <div class="container mr-0">
     <div class="row">
       <div class="col-2 p-0" style="height: 350px">
-        <AdminSideBar />
+        <AdminSideBar page-name="userPage" />
       </div>
 
       <div class="users-list col-10 p-0">

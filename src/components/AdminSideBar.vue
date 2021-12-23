@@ -11,14 +11,14 @@
 
         <div class="admin-main mb-2">
           <img
-            v-if="mainIsClicked"
+            v-if="pageIsMainPage"
             src="../assets/icon/home_icon_active.png"
             alt="home-icon"
           />
           <img v-else src="../assets/icon/home_icon.png" alt="home-icon" />
 
           <router-link
-            v-if="mainIsClicked"
+            v-if="pageIsMainPage"
             to="/admin_main"
             style="color: #ff6600"
             >推文清單</router-link
@@ -28,14 +28,14 @@
 
         <div class="users-list mb-2">
           <img
-            v-if="usersIsClicked"
+            v-if="pageIsUserPage"
             src="../assets/icon/user_icon_active.png"
             alt="user-icon"
           />
           <img v-else src="../assets/icon/user_icon.png" alt="user-icon" />
 
           <router-link
-            v-if="usersIsClicked"
+            v-if="pageIsUserPage"
             to="/admin_users"
             style="color: #ff6600"
             >使用者列表</router-link
@@ -56,16 +56,39 @@
 
 <script>
 export default {
+  props: {
+    pageName: {
+      require: false,
+    },
+  },
+
   data() {
     return {
-      mainIsClicked: false,
-      usersIsClicked: false,
+      pageIsMainPage: true,
+      pageIsUserPage: false,
     };
+  },
+
+  created() {
+    this.iconSwitch();
   },
 
   methods: {
     logout() {
       this.$store.commit("revokeAuthentication");
+    },
+
+    iconSwitch() {
+      if (this.pageName === "mainPage") {
+        this.pageIsMainPage = true;
+        this.pageIsUserPage = false;
+      } else if (this.pageName === "userPage") {
+        this.pageIsMainPage = false;
+        this.pageIsUserPage = true;
+      } else {
+        this.pageIsMainPage = false;
+        this.pageIsUserPage = false;
+      }
     },
   },
 };
