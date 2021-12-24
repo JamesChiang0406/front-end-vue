@@ -10,31 +10,37 @@
           <span>推文清單</span>
         </div>
 
-        <div class="tweets d-flex p-2" v-for="tweet in tweets" :key="tweet.id">
-          <div class="tweeter-pic pt-2 mr-2">
-            <img
-              :src="tweet.user.avatar"
-              alt="tweeter-pic"
-              style="width: 45px; height: 45px"
-            />
-          </div>
-
-          <div class="content">
-            <div class="name-account">
-              <span
-                class="mr-2"
-                style="font-weight: bolder; color: slategrey"
-                >{{ tweet.user.name }}</span
-              >
-
-              <small>@{{ tweet.user.account }}</small>
-              <small> ‧ 10小時</small>
+        <div
+          class="tweets d-flex justify-content-between p-2"
+          v-for="tweet in tweets"
+          :key="tweet.id"
+        >
+          <div class="d-flex">
+            <div class="tweeter-pic pt-2 mr-2">
+              <img
+                :src="tweet.user.avatar"
+                alt="tweeter-pic"
+                style="width: 45px; height: 45px"
+              />
             </div>
 
-            <div class="tweet-text">
-              <p>
-                {{ tweet.description }}
-              </p>
+            <div class="content">
+              <div class="name-account">
+                <span
+                  class="mr-2"
+                  style="font-weight: bolder; color: slategrey"
+                  >{{ tweet.user.name }}</span
+                >
+
+                <small>@{{ tweet.user.account }}</small>
+                <small> ‧ 10小時</small>
+              </div>
+
+              <div class="tweet-text">
+                <p>
+                  {{ tweet.description }}
+                </p>
+              </div>
             </div>
           </div>
 
@@ -90,15 +96,35 @@ export default {
       }
     },
 
-    async handleDelete(id) {
+    handleDelete(id) {
       try {
-        const { data } = await adminAPI.deleteTweet({ tweetId: id });
+        if (this.$store.state.currentUser.role !== "admin") {
+          throw new Error("無授權的動作，請重新確認！");
+        } else {
+          // 刪除貼文前，提供確認視窗
+          Toast.fire({
+            icon: "warning",
+            title: "確定要刪除嗎？",
+            showConfirmButton: true,
+            showCancelButton: true,
+          }).then(async (result) => {
+            if (result.isConfirmed) {
+              const { data } = await adminAPI.deleteTweet({ tweetId: id });
 
-        if (data.status !== "success") {
-          throw new Error(data.message);
+              if (data.status !== "success") {
+                throw new Error(data.message);
+              }
+
+              Toast.fire({
+                icon: "success",
+                title: "推文刪除成功！",
+              });
+              this.tweets = this.tweets.filter((tweet) => tweet.id !== id);
+            } else {
+              return;
+            }
+          });
         }
-
-        this.tweets = this.tweets.filter((tweet) => tweet.id !== id);
       } catch (error) {
         Toast.fire({
           icon: "error",
