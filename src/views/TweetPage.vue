@@ -5,7 +5,17 @@
         <SideBar />
       </div>
 
-      <div class="tweet-text col-6 border">
+      <div
+        class="fa-3x col-6"
+        style="border: 2px #e9e9e9 solid; padding: 0"
+        v-show="isProcessing"
+      >
+        <i class="fas fa-circle-notch fa-spin"></i>
+      </div>
+      <div
+        class="tweet-text col-6 border"
+        :class="{ dataReading: isProcessing }"
+      >
         <div class="title d-flex justify-content-start align-items-center px-3">
           <div class="back-icon mr-3" @click="$router.back()">
             <i class="fas fa-arrow-left"></i>
@@ -159,6 +169,7 @@ export default {
 
         tweetReplies: {},
       },
+      isProcessing: false,
     };
   },
 
@@ -169,12 +180,15 @@ export default {
   methods: {
     async fetchTweets() {
       try {
+        this.isProcessing = true;
+
         const { data } = await tweetAPI.getTweet({ tweetId: this.tweetId });
         if (data.status === "error") {
           throw new Error();
         }
 
         this.tweet = data;
+        this.isProcessing = false;
       } catch (error) {
         Toast.fire({
           icon: "error",
@@ -232,6 +246,10 @@ span {
 .container {
   padding: 0;
   width: 90%;
+}
+
+.dataReading {
+  display: none;
 }
 
 .tweet-text {

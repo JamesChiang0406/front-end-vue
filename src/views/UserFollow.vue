@@ -5,7 +5,17 @@
         <SideBar />
       </div>
 
-      <div class="follow-list col-6 p-0 border">
+      <div
+        class="fa-3x col-6"
+        style="border: 2px #e9e9e9 solid; padding: 0"
+        v-show="isProcessing"
+      >
+        <i class="fas fa-circle-notch fa-spin"></i>
+      </div>
+      <div
+        class="follow-list col-6 p-0 border"
+        :class="{ dataReading: isProcessing }"
+      >
         <div class="nav-bar d-flex align-items-center p-2">
           <div
             class="back-icon mr-3 d-flex align-items-center"
@@ -125,7 +135,8 @@ export default {
       followingsClicked: false,
       userName: "",
       addWho: -1,
-      removeWho:-1
+      removeWho: -1,
+      isProcessing: false,
     };
   },
 
@@ -156,6 +167,7 @@ export default {
 
     async fetchFollowers(id) {
       try {
+        this.isProcessing = true;
         const { data } = await userAPI.getFollowers({ userId: id });
         if (data.length === 0) {
           Toast.fire({
@@ -167,6 +179,7 @@ export default {
         this.followersClicked = true;
         this.followingsClicked = false;
         this.followData = data;
+        this.isProcessing = false;
       } catch (error) {
         Toast.fire({
           icon: "error",
@@ -177,6 +190,7 @@ export default {
 
     async fetchFollowings(id) {
       try {
+        this.isProcessing = true;
         const { data } = await userAPI.getFollowings({ userId: id });
         if (data.length === 0) {
           Toast.fire({
@@ -188,6 +202,7 @@ export default {
         this.followersClicked = false;
         this.followingsClicked = true;
         this.followData = data;
+        this.isProcessing = false;
       } catch (error) {
         Toast.fire({
           icon: "error",
@@ -209,7 +224,7 @@ export default {
           }
         });
         this.addWho = id;
-        this.removeWho = -1
+        this.removeWho = -1;
       } catch (error) {
         Toast.fire({
           icon: "error",
@@ -230,8 +245,8 @@ export default {
             user.isUserFollowing = false;
           }
         });
-        this.removeWho= id
-        this.addWho = -1
+        this.removeWho = id;
+        this.addWho = -1;
       } catch (error) {
         Toast.fire({
           icon: "error",
@@ -270,6 +285,10 @@ export default {
 .title {
   text-align: start;
   position: relative;
+}
+
+.dataReading {
+  display: none;
 }
 
 .follower,

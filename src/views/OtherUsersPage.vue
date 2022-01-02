@@ -5,7 +5,17 @@
         <SideBar />
       </div>
 
-      <div class="user-self col-6 p-0 border">
+      <div
+        class="fa-3x col-6"
+        v-show="isProcessing"
+        style="border: 2px #e9e9e9 solid; padding: 0"
+      >
+        <i class="fas fa-circle-notch fa-spin"></i>
+      </div>
+      <div
+        class="user-self col-6 p-0 border"
+        :class="{ dataReading: isProcessing }"
+      >
         <div
           class="nav-bar d-flex align-items-center px-3 py-2"
           style="margin-bottom: 3px"
@@ -236,6 +246,7 @@ export default {
       isLikedArea: false,
       iconSwitch: true,
       errMsg: "",
+      isProcessing: false,
     };
   },
 
@@ -261,9 +272,11 @@ export default {
 
     async fetchUser({ userId }) {
       try {
+        this.isProcessing = true;
         const { data } = await userAPI.getUser({ userId });
 
         this.user = data;
+        this.isProcessing = false;
       } catch (error) {
         Toast.fire({
           icon: "error",
@@ -448,6 +461,10 @@ export default {
 body {
   z-index: 1;
   position: relative;
+}
+
+.dataReading {
+  display: none;
 }
 
 .title {

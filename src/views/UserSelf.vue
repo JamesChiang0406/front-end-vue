@@ -5,7 +5,17 @@
         <SideBar page-name="profile" />
       </div>
 
-      <div class="user-self col-6 p-0 border">
+      <div
+        class="fa-3x user-self col-6"
+        v-show="isProcessing"
+        style="border: 2px #e9e9e9 solid; padding: 0"
+      >
+        <i class="fas fa-circle-notch fa-spin"></i>
+      </div>
+      <div
+        class="user-self col-6 p-0 border"
+        :class="{ dataReading: isProcessing }"
+      >
         <div
           class="nav-bar d-flex align-items-center px-3 py-2"
           style="margin-bottom: 3px"
@@ -242,6 +252,7 @@ export default {
       isRepliedArea: false,
       isLikedArea: false,
       iconSwitch: true,
+      isProcessing: false,
     };
   },
 
@@ -260,12 +271,14 @@ export default {
 
     async fetchUser({ userId }) {
       try {
+        this.isProcessing = true;
         const { data } = await userAPI.getUser({ userId });
         if (!data) {
           throw new Error();
         }
 
         this.user = data;
+        this.isProcessing = false;
       } catch (error) {
         Toast.fire({
           icon: "error",
@@ -438,8 +451,6 @@ export default {
         });
       }
     },
-
-    // 主頁已完成，使用者頁面以及其它使用者頁面的留言和讚的圖示再調整一下。
   },
 };
 </script>
@@ -448,6 +459,10 @@ export default {
 body {
   z-index: 1;
   position: relative;
+}
+
+.dataReading {
+  display: none;
 }
 
 .title {

@@ -5,7 +5,17 @@
         <SideBar />
       </div>
 
-      <div class="follow-list col-6 p-0 border">
+      <div
+        class="fa-3x col-6"
+        v-show="isProcessing"
+        style="border: 2px #e9e9e9 solid; padding: 0"
+      >
+        <i class="fas fa-circle-notch fa-spin"></i>
+      </div>
+      <div
+        class="follow-list col-6 p-0 border"
+        :class="{ dataReading: isProcessing }"
+      >
         <div class="nav-bar d-flex align-items-center p-2">
           <div
             class="back-icon mr-3 d-flex align-items-center"
@@ -126,6 +136,7 @@ export default {
       userName: "",
       addWho: -1,
       removeWho: -1,
+      isProcessing: false,
     };
   },
 
@@ -140,12 +151,14 @@ export default {
   methods: {
     async fetchUser(id) {
       try {
+        this.isProcessing = true;
         const { data } = await userAPI.getUser({ userId: id });
         if (!data) {
           throw new Error();
         }
 
         this.userName = data.name;
+        this.isProcessing = false;
       } catch (error) {
         Toast.fire({
           icon: "error",
@@ -157,6 +170,7 @@ export default {
     async fetchFollowers(id) {
       try {
         // 狀態切換
+        this.isProcessing = true;
         this.followersClicked = true;
         this.followingsClicked = false;
 
@@ -174,6 +188,7 @@ export default {
             title: "此帳戶無跟隨者資料！",
           });
         }
+        this.isProcessing = false;
       } catch (error) {
         Toast.fire({
           icon: "error",
@@ -187,6 +202,7 @@ export default {
         // 狀態切換
         this.followersClicked = false;
         this.followingsClicked = true;
+        this.isProcessing = true;
 
         // 獲取資料 & 錯誤處理
         const { data } = await userAPI.getFollowings({ userId: id });
@@ -202,6 +218,7 @@ export default {
             title: "此帳戶無跟隨中的資料",
           });
         }
+        this.isProcessing = false;
       } catch (error) {
         Toast.fire({
           icon: "error",
@@ -284,6 +301,10 @@ export default {
 .title {
   text-align: start;
   position: relative;
+}
+
+.dataReading {
+  display: none;
 }
 
 .follower,

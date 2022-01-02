@@ -7,7 +7,10 @@
     <div class="setting-area">
       <div class="title px-3">帳戶設定</div>
 
-      <div class="setting-form px-3">
+      <div class="fa-3x" v-show="isProcessing">
+        <i class="fas fa-circle-notch fa-spin"></i>
+      </div>
+      <div class="setting-form px-3" :class="{ dataReading: isProcessing }">
         <form @submit.stop.prevent="handleSubmit">
           <!-- account -->
           <div class="form-label-group mb-4">
@@ -106,6 +109,7 @@ export default {
       password: "",
       passwordCheck: "",
       isSetting: false,
+      isProcessing: false,
     };
   },
 
@@ -120,6 +124,7 @@ export default {
   methods: {
     async fetchUser({ userId }) {
       try {
+        this.isProcessing = true;
         const { data } = await userAPI.getUser({ userId });
         if (!data) {
           throw new Error();
@@ -128,6 +133,7 @@ export default {
         this.account = data.account;
         this.name = data.name;
         this.email = data.email;
+        this.isProcessing = false;
       } catch (error) {
         Toast.fire({
           icon: "error",
@@ -192,6 +198,10 @@ export default {
 .setting-area {
   width: 100%;
   border-left: 2px #e9e9e9 solid;
+}
+
+.dataReading {
+  display: none;
 }
 
 .submit-btn {

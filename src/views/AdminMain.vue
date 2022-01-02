@@ -82,7 +82,6 @@ export default {
     async fetchTweets() {
       try {
         const { data } = await adminAPI.getTweets();
-
         if (!data) {
           throw new Error(data.message);
         }

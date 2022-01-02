@@ -5,7 +5,10 @@
         <SideBar page-name="homePage" />
       </div>
 
-      <div class="main-area col-6">
+      <div class="fa-3x main-area col-6" v-show="isProcessing">
+        <i class="fas fa-circle-notch fa-spin"></i>
+      </div>
+      <div class="main-area col-6" :class="{ dataReading: isProcessing }">
         <div class="title d-flex justify-content-start align-items-center">
           <span>首頁</span>
         </div>
@@ -185,6 +188,7 @@ export default {
       tweets: [],
       newTweet: "",
       isLoading: false,
+      isProcessing: false,
     };
   },
 
@@ -202,6 +206,7 @@ export default {
   methods: {
     async fetchTweets() {
       try {
+        this.isProcessing = true;
         const { data } = await tweetAPI.getTweets();
 
         if (!data) {
@@ -212,6 +217,7 @@ export default {
         this.tweets.forEach((tweet) => {
           tweet.isUserTweet = this.$store.state.currentUser.id === tweet.UserId;
         });
+        this.isProcessing = false;
       } catch (error) {
         Toast.fire({
           icon: "error",
@@ -353,6 +359,9 @@ body {
 .main-area {
   border: 2px #e9e9e9 solid;
   padding: 0;
+}
+.dataReading {
+  display: none;
 }
 
 .title {
