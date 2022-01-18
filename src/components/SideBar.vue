@@ -65,7 +65,7 @@
       </div>
 
       <div class="tweet-btn mt-3">
-        <button class="btn">推文</button>
+        <button class="btn" @click.stop.prevent="openArea">推文</button>
       </div>
     </div>
 
@@ -121,6 +121,10 @@ export default {
         this.pageIsSetting = false;
         this.pageIsProfile = false;
       }
+    },
+
+    openArea() {
+      this.$emit("openArea");
     },
   },
 };

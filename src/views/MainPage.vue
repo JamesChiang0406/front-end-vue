@@ -1,8 +1,8 @@
 <template>
   <div class="container">
     <div class="row mt-2">
-      <div class="col-3 px-4">
-        <SideBar page-name="homePage" />
+      <div class="col-3 px-4 pt-1">
+        <SideBar page-name="homePage" v-on:openArea="openTweetArea" />
       </div>
 
       <div class="fa-3x main-area col-6" v-show="isProcessing">
@@ -164,8 +164,11 @@
       </div>
     </div>
 
-    <div class="tweeting-area">
-      <TweetingForm />
+    <div class="tweeting-area" v-show="isTweetBtnClicked">
+      <TweetingForm
+        v-on:closeArea="closeTweetArea"
+        v-on:reloadTweet="fetchTweets"
+      />
     </div>
 
     <div class="replying-area">
@@ -189,6 +192,7 @@ export default {
       newTweet: "",
       isLoading: false,
       isProcessing: false,
+      isTweetBtnClicked: false,
     };
   },
 
@@ -229,6 +233,11 @@ export default {
     async handleSubmit() {
       try {
         this.isLoading = true;
+        if (this.newTweet.trim() === "") {
+          this.newTweet = "";
+          throw new Error();
+        }
+
         const { data } = await tweetAPI.createTweet({
           description: this.newTweet,
         });
@@ -340,6 +349,13 @@ export default {
           title: "無法操作，請稍後再試！",
         });
       }
+    },
+
+    openTweetArea() {
+      this.isTweetBtnClicked = true;
+    },
+    closeTweetArea() {
+      this.isTweetBtnClicked = false;
     },
   },
 };
@@ -454,13 +470,12 @@ p {
 }
 
 .tweeting-area {
-  display: none;
-  width: 100%;
-  height: 100%;
   z-index: 999;
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
+  width: 100%;
+  height: 100%;
   background: rgba(0, 0, 0, 0.5);
 }
 .replying-area {

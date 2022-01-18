@@ -2,7 +2,7 @@
   <div class="container">
     <div class="row">
       <div class="col-3 px-4 pt-2">
-        <SideBar page-name="profile" />
+        <SideBar page-name="profile" v-on:openArea="openTweetArea" />
       </div>
 
       <div
@@ -46,7 +46,10 @@
           </div>
         </div>
 
-        <div class="introduction d-flex flex-column mt-5 p-2">
+        <div
+          class="introduction d-flex flex-column"
+          style="margin-top: 35px; padding: 15px"
+        >
           <div class="name-account d-flex flex-column position-relative mb-3">
             <span class="user-name">{{ user.name }}</span>
             <small class="user-account">@{{ user.account }}</small>
@@ -225,6 +228,13 @@
     <div class="editing-area">
       <ProfileEditPage />
     </div>
+
+    <div class="tweeting-area" v-show="isTweetBtnClicked">
+      <TweetingForm
+        v-on:closeArea="closeTweetArea"
+        v-on:reloadTweet="fetchTweets"
+      />
+    </div>
   </div>
 </template>
 
@@ -232,6 +242,7 @@
 import SideBar from "../components/SideBar";
 import FollowWho from "../components/FollowWho";
 import ProfileEditPage from "../components/ProfileEditPage";
+import TweetingForm from "../components/TweetingForm.vue";
 import { Toast } from "../utils/helpers";
 import userAPI from "../apis/users";
 import tweetAPI from "../apis/tweet";
@@ -241,6 +252,7 @@ export default {
     SideBar,
     FollowWho,
     ProfileEditPage,
+    TweetingForm,
   },
 
   data() {
@@ -253,6 +265,7 @@ export default {
       isLikedArea: false,
       iconSwitch: true,
       isProcessing: false,
+      isTweetBtnClicked: false,
     };
   },
 
@@ -451,6 +464,14 @@ export default {
         });
       }
     },
+
+    openTweetArea() {
+      this.isTweetBtnClicked = true;
+    },
+
+    closeTweetArea() {
+      this.isTweetBtnClicked = false;
+    },
   },
 };
 </script>
@@ -597,6 +618,17 @@ a,
 .editing-area {
   display: none;
   position: absolute;
+  z-index: 999;
+  margin: 0;
+  padding: 0;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+}
+.tweeting-area {
+  position: fixed;
   z-index: 999;
   margin: 0;
   padding: 0;

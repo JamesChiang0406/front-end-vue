@@ -1,101 +1,108 @@
 <template>
-  <div class="wrapper d-flex p-0">
-    <div class="sidebar-area">
-      <SideBar page-name="setting" />
+  <div class="container row">
+    <div class="d-flex col-12" style="left: 15%">
+      <div class="sidebar-area">
+        <SideBar page-name="setting" v-on:openArea="openTweetArea" />
+      </div>
+
+      <div class="setting-area">
+        <div class="title px-3">帳戶設定</div>
+
+        <div class="fa-3x" v-show="isProcessing">
+          <i class="fas fa-circle-notch fa-spin"></i>
+        </div>
+        <div class="setting-form px-3" :class="{ dataReading: isProcessing }">
+          <form @submit.stop.prevent="handleSubmit">
+            <!-- account -->
+            <div class="form-label-group mb-4">
+              <label for="account">帳號</label>
+              <input
+                type="text"
+                class="form-control mt-3"
+                v-model="account"
+                name="account"
+                id="account"
+              />
+            </div>
+
+            <!-- name -->
+            <div class="form-label-group mb-4">
+              <label for="name">名稱</label>
+              <input
+                type="text"
+                class="form-control mt-3"
+                v-model="name"
+                name="name"
+                id="name"
+              />
+            </div>
+
+            <!-- email -->
+            <div class="form-label-group mb-4">
+              <label for="email">Email</label>
+              <input
+                type="text"
+                class="form-control mt-3"
+                v-model="email"
+                name="email"
+                id="email"
+              />
+            </div>
+
+            <!-- password -->
+            <div class="form-label-group mb-4">
+              <label for="password">重新設定密碼</label>
+              <input
+                type="password"
+                class="form-control mt-3"
+                v-model="password"
+                name="password"
+                id="password"
+                required
+                autocomplete=""
+              />
+            </div>
+
+            <!-- passwordCheck -->
+            <div class="form-label-group mb-4">
+              <label for="passwordCheck">密碼確認</label>
+              <input
+                type="password"
+                class="form-control mt-3"
+                v-model="passwordCheck"
+                name="passwordCheck"
+                id="passwordCheck"
+                required
+                autocomplete=""
+              />
+            </div>
+
+            <div
+              class="btn-wrapper d-flex justify-content-end"
+              style="width: 540px"
+            >
+              <button
+                class="btn my-2 submit-btn"
+                type="submit"
+                :disabled="isSetting"
+              >
+                儲存
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
     </div>
 
-    <div class="setting-area">
-      <div class="title px-3">帳戶設定</div>
-
-      <div class="fa-3x" v-show="isProcessing">
-        <i class="fas fa-circle-notch fa-spin"></i>
-      </div>
-      <div class="setting-form px-3" :class="{ dataReading: isProcessing }">
-        <form @submit.stop.prevent="handleSubmit">
-          <!-- account -->
-          <div class="form-label-group mb-4">
-            <label for="account">帳號</label>
-            <input
-              type="text"
-              class="form-control mt-3"
-              v-model="account"
-              name="account"
-              id="account"
-            />
-          </div>
-
-          <!-- name -->
-          <div class="form-label-group mb-4">
-            <label for="name">名稱</label>
-            <input
-              type="text"
-              class="form-control mt-3"
-              v-model="name"
-              name="name"
-              id="name"
-            />
-          </div>
-
-          <!-- email -->
-          <div class="form-label-group mb-4">
-            <label for="email">Email</label>
-            <input
-              type="text"
-              class="form-control mt-3"
-              v-model="email"
-              name="email"
-              id="email"
-            />
-          </div>
-
-          <!-- password -->
-          <div class="form-label-group mb-4">
-            <label for="password">重新設定密碼</label>
-            <input
-              type="password"
-              class="form-control mt-3"
-              v-model="password"
-              name="password"
-              id="password"
-              required
-              autocomplete=""
-            />
-          </div>
-
-          <!-- passwordCheck -->
-          <div class="form-label-group mb-4">
-            <label for="passwordCheck">密碼確認</label>
-            <input
-              type="password"
-              class="form-control mt-3"
-              v-model="passwordCheck"
-              name="passwordCheck"
-              id="passwordCheck"
-              required
-              autocomplete=""
-            />
-          </div>
-
-          <div
-            class="btn-wrapper d-flex justify-content-end"
-            style="width: 540px"
-          >
-            <button
-              class="btn my-2 submit-btn"
-              type="submit"
-              :disabled="isSetting"
-            >
-              儲存
-            </button>
-          </div>
-        </form>
-      </div>
+    <div class="tweeting-area" v-show="isTweetBtnClicked">
+      <TweetingForm v-on:closeArea="closeTweetArea" />
     </div>
   </div>
 </template>
 
 <script>
 import SideBar from "../components/SideBar";
+import TweetingForm from "../components/TweetingForm.vue";
 import userAPI from "../apis/users";
 import { Toast } from "../utils/helpers";
 
@@ -110,11 +117,13 @@ export default {
       passwordCheck: "",
       isSetting: false,
       isProcessing: false,
+      isTweetBtnClicked: false,
     };
   },
 
   components: {
     SideBar,
+    TweetingForm,
   },
 
   created() {
@@ -179,20 +188,46 @@ export default {
         });
       }
     },
+
+    openTweetArea() {
+      this.isTweetBtnClicked = true;
+    },
+
+    closeTweetArea() {
+      this.isTweetBtnClicked = false;
+    },
   },
 };
 </script>
 
 <style scoped>
-.wrapper {
-  margin-left: 100px;
-  margin-right: 0;
+body {
+  position: relative;
+  z-index: 1;
+  margin: 0;
+  padding: 0;
+}
+
+.container {
   height: 100vh;
+  margin: 0;
+  padding: 0;
+}
+
+.tweeting-area {
+  position: fixed;
+  z-index: 999;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
 }
 
 .sidebar-area {
   width: 320px;
-  padding-top: 8px;
+  height: auto;
+  padding-top: 10px;
+  padding-left: 15px;
+  padding-right: 15px;
 }
 
 .setting-area {

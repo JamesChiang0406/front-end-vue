@@ -2,7 +2,7 @@
   <div class="container">
     <div class="row mt-2">
       <div class="col-3 px-4">
-        <SideBar />
+        <SideBar v-on:openArea="openTweetArea" />
       </div>
 
       <div
@@ -136,6 +136,10 @@
       </div>
     </div>
 
+    <div class="tweeting-area" v-show="isTweetBtnClicked">
+      <TweetingForm v-on:closeArea="closeTweetArea" />
+    </div>
+
     <div class="replying-area">
       <ReplyingForm />
     </div>
@@ -145,6 +149,7 @@
 <script>
 import SideBar from "../components/SideBar";
 import FollowWho from "../components/FollowWho";
+import TweetingForm from "../components/TweetingForm.vue";
 import ReplyingForm from "../components/ReplyingForm";
 import tweetAPI from "../apis/tweet";
 import { Toast } from "../utils/helpers";
@@ -154,6 +159,7 @@ export default {
     SideBar,
     FollowWho,
     ReplyingForm,
+    TweetingForm,
   },
 
   data() {
@@ -170,6 +176,7 @@ export default {
         tweetReplies: {},
       },
       isProcessing: false,
+      isTweetBtnClicked: false,
     };
   },
 
@@ -230,6 +237,14 @@ export default {
         });
       }
     },
+
+    openTweetArea() {
+      this.isTweetBtnClicked = true;
+    },
+
+    closeTweetArea() {
+      this.isTweetBtnClicked = false;
+    },
   },
 };
 </script>
@@ -250,6 +265,16 @@ span {
 
 .dataReading {
   display: none;
+}
+
+.tweeting-area {
+  position: fixed;
+  z-index: 999;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
 }
 
 .tweet-text {

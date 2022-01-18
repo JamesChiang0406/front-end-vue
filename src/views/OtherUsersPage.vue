@@ -2,7 +2,7 @@
   <div class="container">
     <div class="row">
       <div class="col-3 px-4 pt-2">
-        <SideBar />
+        <SideBar v-on:openArea="openTweetArea" />
       </div>
 
       <div
@@ -41,12 +41,14 @@
 
             <div class="edit-area d-flex justify-content-between px-3">
               <img :src="user.avatar" alt="user-pic" class="user-pic" />
-              <button class="btn edit-btn">編輯個人資料</button>
             </div>
           </div>
         </div>
 
-        <div class="introduction d-flex flex-column mt-5 p-2">
+        <div
+          class="introduction d-flex flex-column"
+          style="margin-top: 30px; padding: 15px"
+        >
           <div class="name-account d-flex flex-column position-relative mb-3">
             <span class="user-name">{{ user.name }}</span>
             <small class="user-account">@{{ user.account }}</small>
@@ -215,8 +217,8 @@
       </div>
     </div>
 
-    <div class="editing-area">
-      <ProfileEditPage />
+    <div class="tweeting-area" v-show="isTweetBtnClicked">
+      <TweetingForm v-on:closeArea="closeTweetArea" />
     </div>
   </div>
 </template>
@@ -224,7 +226,7 @@
 <script>
 import SideBar from "../components/SideBar";
 import FollowWho from "../components/FollowWho";
-import ProfileEditPage from "../components/ProfileEditPage";
+import TweetingForm from "../components/TweetingForm.vue";
 import { Toast } from "../utils/helpers";
 import userAPI from "../apis/users";
 import tweetAPI from "../apis/tweet";
@@ -233,7 +235,7 @@ export default {
   components: {
     SideBar,
     FollowWho,
-    ProfileEditPage,
+    TweetingForm,
   },
 
   data() {
@@ -247,10 +249,12 @@ export default {
       iconSwitch: true,
       errMsg: "",
       isProcessing: false,
+      isTweetBtnClicked: false,
     };
   },
 
   created() {
+    this.selfOrUsers();
     this.fetchUser({ userId: this.id });
     this.fetchTweets();
   },
@@ -453,6 +457,22 @@ export default {
         });
       }
     },
+
+    openTweetArea() {
+      this.isTweetBtnClicked = true;
+    },
+
+    closeTweetArea() {
+      this.isTweetBtnClicked = false;
+    },
+
+    selfOrUsers() {
+      if (this.$route.params.id === this.$store.state.currentUser.id) {
+        this.$router.push({
+          name: "user-self",
+        });
+      }
+    },
   },
 };
 </script>
@@ -465,6 +485,16 @@ body {
 
 .dataReading {
   display: none;
+}
+
+.tweeting-area {
+  position: fixed;
+  z-index: 999;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  background: rgba(0, 0, 0, 0.5);
 }
 
 .title {
@@ -490,16 +520,6 @@ body {
   border: 3px white solid;
   border-radius: 100%;
   background-color: white;
-}
-.edit-btn {
-  padding: 2px;
-  margin-top: 12%;
-  width: 130px;
-  height: 40px;
-  font-size: 15px;
-  border-radius: 30px;
-  color: #ff6600;
-  border: 1px #ff6600 solid;
 }
 
 .introduction {
@@ -591,18 +611,5 @@ a,
 
 .avatar:hover {
   opacity: 0.5;
-}
-
-.editing-area {
-  display: none;
-  position: absolute;
-  z-index: 999;
-  margin: 0;
-  padding: 0;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5);
 }
 </style>
