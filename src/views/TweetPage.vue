@@ -78,7 +78,10 @@
                 <span>喜歡</span>
               </div>
 
-              <div class="reply-numbers">
+              <div
+                class="reply-numbers"
+                @click.stop.prevent="openReplyArea(tweet.id)"
+              >
                 <span>{{ tweet.repliedCount }} </span>
                 <span>回覆</span>
               </div>
@@ -87,46 +90,55 @@
         </div>
 
         <div
-          class="replys d-flex py-2 px-3"
+          class="replys d-flex justify-content-between py-2 px-3"
           v-for="reply in tweet.tweetReplies"
           :key="reply.id"
         >
-          <div class="image-area pt-2" style="margin-right: 10px">
-            <router-link
-              :to="{ name: 'other-user', params: { id: reply.User.id } }"
-            >
-              <img
-                :src="reply.User.avatar"
-                alt="icon"
-                style="width: 40px; height: 40px"
-              />
-            </router-link>
+          <div class="d-flex">
+            <div class="image-area pt-2" style="margin-right: 16px">
+              <router-link
+                :to="{ name: 'other-user', params: { id: reply.User.id } }"
+              >
+                <img
+                  :src="reply.User.avatar"
+                  alt="icon"
+                  style="width: 40px; height: 40px"
+                />
+              </router-link>
+            </div>
+
+            <div class="text-area d-flex flex-column flex-wrap">
+              <div
+                class="profile d-flex justify-content-start align-items-center"
+              >
+                <span class="follower-name" style="margin-right: 10px">{{
+                  reply.User.name
+                }}</span>
+                <span class="follower-account"
+                  >@{{ reply.User.account }} ‧ 13小時</span
+                >
+              </div>
+
+              <div class="reply-to">
+                <span style="font-size: 15px; margin-right: 3px">回覆</span>
+                <router-link
+                  :to="{ name: 'other-user', params: { id: tweet.UserId } }"
+                  style="font-size: 15px"
+                  >@{{ tweet.user.account }}</router-link
+                >
+              </div>
+
+              <div class="tweet">
+                <p class="m-0">{{ reply.comment }}</p>
+              </div>
+            </div>
           </div>
 
-          <div class="text-area d-flex flex-column flex-wrap">
-            <div
-              class="profile d-flex justify-content-start align-items-center"
-            >
-              <span class="follower-name" style="margin-right: 10px">{{
-                reply.User.name
-              }}</span>
-              <span class="follower-account"
-                >@{{ reply.User.account }} ‧ 13小時</span
-              >
-            </div>
-
-            <div class="reply-to">
-              <span style="font-size: 15px; margin-right: 3px">回覆</span>
-              <router-link
-                :to="{ name: 'other-user', params: { id: tweet.UserId } }"
-                style="font-size: 15px"
-                >@{{ tweet.user.account }}</router-link
-              >
-            </div>
-
-            <div class="tweet">
-              <p class="m-0">{{ reply.comment }}</p>
-            </div>
+          <div
+            v-if="reply.isUserReply"
+            @click.stop.prevent="deleteReply(reply.id)"
+          >
+            <i class="fas fa-times delete-btn"></i>
           </div>
         </div>
       </div>
@@ -140,8 +152,12 @@
       <TweetingForm v-on:closeArea="closeTweetArea" />
     </div>
 
-    <div class="replying-area">
-      <ReplyingForm />
+    <div class="replying-area" v-show="isReplyBtnClicked">
+      <ReplyingForm
+        :reply-tweet="replyTweet"
+        v-on:closeArea="closeReplyArea"
+        v-on:closeAndUp="closeAndUp"
+      />
     </div>
   </div>
 </template>
@@ -172,22 +188,34 @@ export default {
           avatar: "",
           name: "",
         },
-
         tweetReplies: {},
       },
       isProcessing: false,
       isTweetBtnClicked: false,
+      isReplyBtnClicked: false,
+      replyTweet: {
+        userId: -1,
+        tweetId: -1,
+        createdAt: "",
+        description: "",
+        user: {
+          account: "",
+          avatar: "",
+          name: "",
+        },
+      },
     };
   },
 
   created() {
-    this.fetchTweets();
+    this.fetchTweet();
   },
 
   methods: {
-    async fetchTweets() {
+    async fetchTweet() {
       try {
         this.isProcessing = true;
+        const userId = this.$store.state.currentUser.id;
 
         const { data } = await tweetAPI.getTweet({ tweetId: this.tweetId });
         if (data.status === "error") {
@@ -195,6 +223,13 @@ export default {
         }
 
         this.tweet = data;
+        this.tweet.tweetReplies.map((reply) => {
+          if (reply.User.id === userId) {
+            reply.isUserReply = true;
+          } else {
+            reply.isUserReply = false;
+          }
+        });
         this.isProcessing = false;
       } catch (error) {
         Toast.fire({
@@ -244,6 +279,63 @@ export default {
 
     closeTweetArea() {
       this.isTweetBtnClicked = false;
+    },
+
+    async openReplyArea(tweetId) {
+      try {
+        const { data } = await tweetAPI.getTweet({ tweetId });
+        if (data.status === "error") {
+          throw new Error(data.message);
+        }
+
+        this.replyTweet.userId = data.UserId;
+        this.replyTweet.tweetId = tweetId;
+        this.replyTweet.createdAt = data.createdAt;
+        this.replyTweet.description = data.description;
+        this.replyTweet.user = data.user;
+        this.isReplyBtnClicked = true;
+      } catch (error) {
+        Toast.fire({
+          icon: "error",
+          title: "無法取得推文，請稍後再試！",
+        });
+      }
+    },
+
+    closeReplyArea() {
+      this.isReplyBtnClicked = false;
+    },
+
+    closeAndUp() {
+      this.isReplyBtnClicked = false;
+      this.fetchTweet();
+    },
+
+    deleteReply(replyId) {
+      // 刪除前提供確認視窗
+      Toast.fire({
+        icon: "warning",
+        title: "確定要刪除此回覆嗎？",
+        showConfirmButton: true,
+        showCancelButton: true,
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          const { data } = await tweetAPI.deleteReply({ reply_id: replyId });
+          if (data.status === "error") {
+            throw new Error(data.message);
+          }
+
+          Toast.fire({
+            icon: "success",
+            title: "刪除回覆成功！",
+          });
+          this.tweet.tweetReplies = this.tweet.tweetReplies.filter((reply) => {
+            return reply.id !== replyId;
+          });
+        } else {
+          return;
+        }
+      });
     },
   },
 };
@@ -308,9 +400,8 @@ span {
 }
 
 .replying-area {
-  display: none;
   z-index: 999;
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   width: 100%;
@@ -332,7 +423,9 @@ span {
 .likes:hover {
   cursor: pointer;
 }
-.reply-numbers:hover {
+.reply-numbers:hover,
+.delete-btn:hover {
+  cursor: pointer;
   color: crimson;
 }
 .replys,

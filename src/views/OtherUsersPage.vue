@@ -92,7 +92,7 @@
             :class="{ firstClicked: isRepliedArea }"
             @click.stop.prevent="fetchReplies(id)"
           >
-            推文與回覆
+            回覆的內容
           </div>
           <div
             class="changeArea"
@@ -170,10 +170,15 @@
                 class="icon-area d-flex justify-content-start"
                 v-if="iconSwitch"
               >
-                <div class="comments" style="margin-right: 30px">
+                <div
+                  class="comments"
+                  style="margin-right: 30px"
+                  @click.stop.prevent="openReplyArea(tweet.id)"
+                >
                   <img
                     src="../assets/icon/reply_icon.svg"
                     alt="comment-icon"
+                    class="reply-btn"
                     style="margin-right: 10px"
                   />
                   <small>{{ tweet.repliedCount }}</small>
@@ -220,6 +225,14 @@
     <div class="tweeting-area" v-show="isTweetBtnClicked">
       <TweetingForm v-on:closeArea="closeTweetArea" />
     </div>
+
+    <div class="replying-area" v-show="isReplyBtnClicked">
+      <ReplyingForm
+        :reply-tweet="replyTweet"
+        v-on:closeArea="closeReplyArea"
+        v-on:closeAndUp="closeAndUp"
+      />
+    </div>
   </div>
 </template>
 
@@ -227,6 +240,7 @@
 import SideBar from "../components/SideBar";
 import FollowWho from "../components/FollowWho";
 import TweetingForm from "../components/TweetingForm.vue";
+import ReplyingForm from "../components/ReplyingForm.vue";
 import { Toast } from "../utils/helpers";
 import userAPI from "../apis/users";
 import tweetAPI from "../apis/tweet";
@@ -236,6 +250,7 @@ export default {
     SideBar,
     FollowWho,
     TweetingForm,
+    ReplyingForm,
   },
 
   data() {
@@ -250,6 +265,18 @@ export default {
       errMsg: "",
       isProcessing: false,
       isTweetBtnClicked: false,
+      isReplyBtnClicked: false,
+      replyTweet: {
+        userId: -1,
+        tweetId: -1,
+        createdAt: "",
+        description: "",
+        user: {
+          account: "",
+          avatar: "",
+          name: "",
+        },
+      },
     };
   },
 
@@ -473,6 +500,41 @@ export default {
         });
       }
     },
+
+    async openReplyArea(tweetId) {
+      try {
+        const { data } = await tweetAPI.getTweet({ tweetId });
+        if (data.status === "error") {
+          throw new Error(data.message);
+        }
+
+        this.replyTweet.userId = data.UserId;
+        this.replyTweet.tweetId = tweetId;
+        this.replyTweet.createdAt = data.createdAt;
+        this.replyTweet.description = data.description;
+        this.replyTweet.user = data.user;
+        this.isReplyBtnClicked = true;
+      } catch (error) {
+        Toast.fire({
+          icon: "error",
+          title: "無法取得推文，請稍後再試！",
+        });
+      }
+    },
+
+    closeReplyArea() {
+      this.isReplyBtnClicked = false;
+    },
+
+    closeAndUp(TweetId) {
+      this.tweets.map((tweet) => {
+        if (tweet.id === TweetId) {
+          tweet.repliedCount += 1;
+        }
+      });
+
+      this.isReplyBtnClicked = false;
+    },
   },
 };
 </script>
@@ -495,6 +557,15 @@ body {
   top: 0;
   left: 0;
   background: rgba(0, 0, 0, 0.5);
+}
+.replying-area {
+  position: fixed;
+  z-index: 999;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  background: rgb(0, 0, 0, 0.5);
 }
 
 .title {
@@ -598,7 +669,8 @@ a,
 .likes {
   color: darkgray;
 }
-.likes:hover {
+.likes:hover,
+.reply-btn:hover {
   cursor: pointer;
   color: crimson;
 }

@@ -31,5 +31,13 @@ export default {
 
   getTweet({ tweetId }) {
     return apiHelper.get(`/tweets/${tweetId}`)
+  },
+
+  postReply({ TweetId, comment }) {
+    return apiHelper.post('/tweets/reply', { TweetId, comment })
+  },
+
+  deleteReply({ reply_id }) {
+    return apiHelper.delete(`/tweets/reply/${reply_id}`)
   }
 }

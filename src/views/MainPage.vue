@@ -105,11 +105,16 @@
               </div>
 
               <div class="icon-area d-flex justify-content-start">
-                <div class="comments" style="margin-right: 30px">
+                <div
+                  class="comments"
+                  style="margin-right: 30px"
+                  @click.stop.prevent="openReplyArea(tweet.id)"
+                >
                   <img
                     src="../assets/icon/reply_icon.svg"
                     alt="comment-icon"
                     style="width: 13px; height: 13px; margin-right: 5px"
+                    class="reply-btn"
                   />
                   <small>{{ tweet.repliedCount }}</small>
                 </div>
@@ -171,8 +176,12 @@
       />
     </div>
 
-    <div class="replying-area">
-      <ReplyingForm />
+    <div class="replying-area" v-show="isReplyBtnClicked">
+      <ReplyingForm
+        :reply-tweet="replyTweet"
+        v-on:closeArea="closeReplyArea"
+        v-on:closeAndUp="closeAndUp"
+      />
     </div>
   </div>
 </template>
@@ -193,6 +202,18 @@ export default {
       isLoading: false,
       isProcessing: false,
       isTweetBtnClicked: false,
+      isReplyBtnClicked: false,
+      replyTweet: {
+        userId: -1,
+        tweetId: -1,
+        createdAt: "",
+        description: "",
+        user: {
+          account: "",
+          avatar: "",
+          name: "",
+        },
+      },
     };
   },
 
@@ -354,9 +375,47 @@ export default {
     openTweetArea() {
       this.isTweetBtnClicked = true;
     },
+
     closeTweetArea() {
       this.isTweetBtnClicked = false;
     },
+
+    async openReplyArea(tweetId) {
+      try {
+        const { data } = await tweetAPI.getTweet({ tweetId });
+        if (data.status === "error") {
+          throw new Error(data.message);
+        }
+
+        this.replyTweet.userId = data.UserId;
+        this.replyTweet.tweetId = tweetId;
+        this.replyTweet.createdAt = data.createdAt;
+        this.replyTweet.description = data.description;
+        this.replyTweet.user = data.user;
+        this.isReplyBtnClicked = true;
+      } catch (error) {
+        Toast.fire({
+          icon: "error",
+          title: "無法取得推文，請稍後再試！",
+        });
+      }
+    },
+
+    closeReplyArea() {
+      this.isReplyBtnClicked = false;
+    },
+
+    closeAndUp(TweetId) {
+      this.tweets.map((tweet) => {
+        if (tweet.id === TweetId) {
+          tweet.repliedCount += 1;
+        }
+      });
+
+      this.isReplyBtnClicked = false;
+    },
+
+    // 完成刪除回應的功能
   },
 };
 </script>
@@ -479,9 +538,8 @@ p {
   background: rgba(0, 0, 0, 0.5);
 }
 .replying-area {
-  display: none;
   z-index: 999;
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   width: 100%;
@@ -494,6 +552,10 @@ p {
 .likes:hover {
   text-decoration-line: underline;
   color: crimson;
+}
+
+.reply-btn:hover {
+  cursor: pointer;
 }
 
 .image:hover {
