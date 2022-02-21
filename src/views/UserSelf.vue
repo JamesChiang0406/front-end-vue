@@ -85,7 +85,7 @@
           <div
             class="changeArea"
             :class="{ firstClicked: isRepliedArea }"
-            @click.stop.prevent="fetchReplies()"
+            @click.stop.prevent="fetchReplies(id)"
           >
             回覆的內容
           </div>
@@ -129,7 +129,7 @@
                 </router-link>
 
                 <span class="follower-account"
-                  >@{{ tweet.user.account }} ‧ 3小時</span
+                  >@{{ tweet.user.account }} ‧ {{ tweet.fromNow }}</span
                 >
               </div>
 
@@ -259,6 +259,7 @@ import ReplyingForm from "../components/ReplyingForm.vue";
 import { Toast } from "../utils/helpers";
 import userAPI from "../apis/users";
 import tweetAPI from "../apis/tweet";
+import moment from "moment";
 
 export default {
   components: {
@@ -298,6 +299,7 @@ export default {
   created() {
     this.fetchUser({ userId: this.id });
     this.fetchTweets();
+    moment.locale("zh-tw");
   },
 
   methods: {
@@ -345,6 +347,7 @@ export default {
         this.tweets = this.tweets.filter((tweet) => tweet.UserId === this.id);
         this.tweets.forEach((tweet) => {
           tweet.isUserTweet = this.$store.state.currentUser.id === tweet.UserId;
+          tweet.fromNow = moment(tweet.createdAt).fromNow();
         });
         if (this.tweets.length === 0) {
           Toast.fire({
@@ -360,19 +363,21 @@ export default {
       }
     },
 
-    async fetchReplies() {
+    async fetchReplies(userId) {
       try {
         this.iconSwitch = false;
         this.isTweetsArea = false;
         this.isLikedArea = false;
 
-        const userId = this.id;
         const { data } = await tweetAPI.getReplies({ userId });
         if (data.status === "error") {
           throw new Error(data.message);
         }
 
         this.tweets = data;
+        this.tweets.forEach((tweet) => {
+          tweet.fromNow = moment(tweet.createdAt).fromNow();
+        });
         this.isRepliedArea = true;
       } catch (error) {
         this.isRepliedArea = true;
@@ -399,6 +404,7 @@ export default {
         this.tweets = this.tweets.filter((tweet) => tweet.isLiked === true);
         this.tweets.forEach((tweet) => {
           tweet.isUserTweet = this.$store.state.currentUser.id === tweet.UserId;
+          tweet.fromNow = moment(tweet.createdAt).fromNow();
         });
       } catch (error) {
         Toast.fire({
@@ -508,7 +514,7 @@ export default {
 
         this.replyTweet.userId = data.UserId;
         this.replyTweet.tweetId = tweetId;
-        this.replyTweet.createdAt = data.createdAt;
+        this.replyTweet.createdAt = moment(data.createdAt).fromNow();
         this.replyTweet.description = data.description;
         this.replyTweet.user = data.user;
         this.isReplyBtnClicked = true;

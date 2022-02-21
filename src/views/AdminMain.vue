@@ -33,7 +33,7 @@
                 >
 
                 <small>@{{ tweet.user.account }}</small>
-                <small> ‧ 10小時</small>
+                <small> ‧ {{ tweet.createdAt }}</small>
               </div>
 
               <div class="tweet-text">
@@ -62,6 +62,7 @@
 import AdminSideBar from "../components/AdminSideBar";
 import adminAPI from "../apis/admin";
 import { Toast } from "../utils/helpers";
+import moment from "moment";
 
 export default {
   components: {
@@ -76,6 +77,7 @@ export default {
 
   created() {
     this.fetchTweets();
+    moment.locale("zh-tw");
   },
 
   methods: {
@@ -87,6 +89,9 @@ export default {
         }
 
         this.tweets = data;
+        this.tweets.forEach((tweet) => {
+          tweet.createdAt = moment(tweet.createdAt).fromNow();
+        });
       } catch (error) {
         Toast.fire({
           icon: "error",

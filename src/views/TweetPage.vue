@@ -54,7 +54,7 @@
           </div>
 
           <div class="publish-time pb-1">
-            <span>上午 10:05 ‧ 2020年6月10日</span>
+            <span>{{ tweet.createdAt }}</span>
           </div>
 
           <div class="replys-likes d-flex flex-column">
@@ -115,7 +115,7 @@
                   reply.User.name
                 }}</span>
                 <span class="follower-account"
-                  >@{{ reply.User.account }} ‧ 13小時</span
+                  >@{{ reply.User.account }} ‧ {{ reply.updatedAt }}</span
                 >
               </div>
 
@@ -169,6 +169,7 @@ import TweetingForm from "../components/TweetingForm.vue";
 import ReplyingForm from "../components/ReplyingForm";
 import tweetAPI from "../apis/tweet";
 import { Toast } from "../utils/helpers";
+import moment from "moment";
 
 export default {
   components: {
@@ -209,6 +210,7 @@ export default {
 
   created() {
     this.fetchTweet();
+    moment.locale("zh-tw");
   },
 
   methods: {
@@ -223,12 +225,17 @@ export default {
         }
 
         this.tweet = data;
+        this.tweet.createdAt = moment(this.tweet.createdAt).format(
+          "Ah:mm ‧ YYYY年MM月DD日"
+        );
         this.tweet.tweetReplies.map((reply) => {
           if (reply.User.id === userId) {
             reply.isUserReply = true;
           } else {
             reply.isUserReply = false;
           }
+
+          reply.updatedAt = moment(reply.updatedAt).fromNow();
         });
         this.isProcessing = false;
       } catch (error) {
@@ -290,7 +297,7 @@ export default {
 
         this.replyTweet.userId = data.UserId;
         this.replyTweet.tweetId = tweetId;
-        this.replyTweet.createdAt = data.createdAt;
+        this.replyTweet.createdAt = moment(data.createdAt).fromNow();
         this.replyTweet.description = data.description;
         this.replyTweet.user = data.user;
         this.isReplyBtnClicked = true;

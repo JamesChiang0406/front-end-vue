@@ -41,7 +41,7 @@
             replyTweet.user.name
           }}</span>
           <small class="account">@{{ replyTweet.user.account }}</small>
-          <small class="publish-time">‧ 3小時</small>
+          <small class="publish-time">‧ {{ replyTweet.createdAt }}</small>
         </div>
 
         <div class="text">

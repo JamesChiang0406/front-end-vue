@@ -90,7 +90,7 @@
                 </router-link>
 
                 <span class="follower-account"
-                  >@{{ tweet.user.account }} ‧ 3小時</span
+                  >@{{ tweet.user.account }} ‧ {{ tweet.fromNow }}</span
                 >
               </div>
 
@@ -193,6 +193,7 @@ import TweetingForm from "../components/TweetingForm";
 import ReplyingForm from "../components/ReplyingForm";
 import tweetAPI from "../apis/tweet";
 import { Toast } from "../utils/helpers";
+import moment from "moment";
 
 export default {
   data() {
@@ -219,6 +220,7 @@ export default {
 
   created() {
     this.fetchTweets();
+    moment.locale("zh-tw");
   },
 
   components: {
@@ -241,6 +243,7 @@ export default {
         this.tweets = data;
         this.tweets.forEach((tweet) => {
           tweet.isUserTweet = this.$store.state.currentUser.id === tweet.UserId;
+          tweet.fromNow = moment(tweet.createdAt).fromNow();
         });
         this.isProcessing = false;
       } catch (error) {
@@ -389,7 +392,7 @@ export default {
 
         this.replyTweet.userId = data.UserId;
         this.replyTweet.tweetId = tweetId;
-        this.replyTweet.createdAt = data.createdAt;
+        this.replyTweet.createdAt = moment(data.createdAt).fromNow();
         this.replyTweet.description = data.description;
         this.replyTweet.user = data.user;
         this.isReplyBtnClicked = true;
