@@ -41,7 +41,12 @@
 
             <div class="edit-area d-flex justify-content-between px-3">
               <img :src="user.avatar" alt="user-pic" class="user-pic" />
-              <button class="btn edit-btn">編輯個人資料</button>
+              <button
+                class="btn edit-btn"
+                @click.stop.prevent="openSettingArea"
+              >
+                編輯個人資料
+              </button>
             </div>
           </div>
         </div>
@@ -237,6 +242,7 @@
       <TweetingForm
         v-on:closeArea="closeTweetArea"
         v-on:reloadTweet="fetchTweets"
+        :user-avatar="user.avatar"
       />
     </div>
 
@@ -245,6 +251,13 @@
         :reply-tweet="replyTweet"
         v-on:closeArea="closeReplyArea"
         v-on:closeAndUp="closeAndUp"
+      />
+    </div>
+
+    <div class="setting-area" v-show="isSettingBtnClicked">
+      <SettingForm
+        v-on:closeArea="closeSettingArea"
+        v-on:closeSetAndUp="closeSetAndUp"
       />
     </div>
   </div>
@@ -256,6 +269,7 @@ import FollowWho from "../components/FollowWho";
 import ProfileEditPage from "../components/ProfileEditPage";
 import TweetingForm from "../components/TweetingForm.vue";
 import ReplyingForm from "../components/ReplyingForm.vue";
+import SettingForm from "../components/SettingForm.vue";
 import { Toast } from "../utils/helpers";
 import userAPI from "../apis/users";
 import tweetAPI from "../apis/tweet";
@@ -268,6 +282,7 @@ export default {
     ProfileEditPage,
     TweetingForm,
     ReplyingForm,
+    SettingForm,
   },
 
   data() {
@@ -282,6 +297,7 @@ export default {
       isProcessing: false,
       isTweetBtnClicked: false,
       isReplyBtnClicked: false,
+      isSettingBtnClicked: false,
       replyTweet: {
         userId: -1,
         tweetId: -1,
@@ -539,6 +555,19 @@ export default {
 
       this.isReplyBtnClicked = false;
     },
+
+    openSettingArea() {
+      this.isSettingBtnClicked = true;
+    },
+
+    closeSettingArea() {
+      this.isSettingBtnClicked = false;
+    },
+
+    closeSetAndUp() {
+      this.isSettingBtnClicked = false;
+      this.fetchUser({ userId: this.id });
+    },
   },
 };
 </script>
@@ -695,20 +724,13 @@ a,
   height: 100%;
   background: rgba(0, 0, 0, 0.5);
 }
-.tweeting-area {
+.tweeting-area,
+.replying-area,
+.setting-area {
   position: fixed;
   z-index: 999;
   margin: 0;
   padding: 0;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5);
-}
-.replying-area {
-  position: fixed;
-  z-index: 999;
   top: 0;
   left: 0;
   width: 100%;

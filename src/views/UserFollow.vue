@@ -114,7 +114,7 @@
     </div>
 
     <div class="tweeting-area" v-show="isTweetBtnClicked">
-      <TweetingForm v-on:closeArea="closeTweetArea" />
+      <TweetingForm v-on:closeArea="closeTweetArea" :user-avatar="userAvatar" />
     </div>
   </div>
 </template>
@@ -140,6 +140,7 @@ export default {
       followersClicked: true,
       followingsClicked: false,
       userName: "",
+      userAvatar: "",
       addWho: -1,
       removeWho: -1,
       isProcessing: false,
@@ -164,6 +165,7 @@ export default {
         }
 
         this.userName = data.name;
+        this.userAvatar = data.avatar;
       } catch (error) {
         Toast.fire({
           icon: "error",

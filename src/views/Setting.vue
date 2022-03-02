@@ -95,7 +95,7 @@
     </div>
 
     <div class="tweeting-area" v-show="isTweetBtnClicked">
-      <TweetingForm v-on:closeArea="closeTweetArea" />
+      <TweetingForm v-on:closeArea="closeTweetArea" :user-avatar="userAvatar" />
     </div>
   </div>
 </template>
@@ -110,6 +110,7 @@ export default {
   data() {
     return {
       id: this.$store.state.currentUser.id,
+      userAvatar: "",
       account: "",
       name: "",
       email: "",
@@ -142,6 +143,7 @@ export default {
         this.account = data.account;
         this.name = data.name;
         this.email = data.email;
+        this.userAvatar = data.avatar;
         this.isProcessing = false;
       } catch (error) {
         Toast.fire({

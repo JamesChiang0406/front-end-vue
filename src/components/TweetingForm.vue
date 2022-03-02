@@ -21,9 +21,14 @@
           "
         >
           <img
-            src="../assets/icon/Icon.png"
+            :src="userAvatar"
             alt="avatar-img"
-            style="width: 40px; height: 40px; margin-right: 10px"
+            style="
+              width: 50px;
+              height: 50px;
+              margin-right: 10px;
+              border-radius: 30px;
+            "
           />
 
           <textarea
@@ -65,6 +70,12 @@ import tweetAPI from "../apis/tweet";
 import { Toast } from "../utils/helpers";
 
 export default {
+  props: {
+    userAvatar: {
+      require: false,
+    },
+  },
+
   data() {
     return {
       newTweet: "",

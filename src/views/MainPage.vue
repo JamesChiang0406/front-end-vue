@@ -173,6 +173,7 @@
       <TweetingForm
         v-on:closeArea="closeTweetArea"
         v-on:reloadTweet="fetchTweets"
+        :user-avatar="userAvatar"
       />
     </div>
 
@@ -198,6 +199,7 @@ import moment from "moment";
 export default {
   data() {
     return {
+      userAvatar: this.$store.state.currentUser.avatar,
       tweets: [],
       newTweet: "",
       isLoading: false,

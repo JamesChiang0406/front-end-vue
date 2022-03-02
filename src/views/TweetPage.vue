@@ -149,7 +149,7 @@
     </div>
 
     <div class="tweeting-area" v-show="isTweetBtnClicked">
-      <TweetingForm v-on:closeArea="closeTweetArea" />
+      <TweetingForm v-on:closeArea="closeTweetArea" :user-avatar="userAvatar" />
     </div>
 
     <div class="replying-area" v-show="isReplyBtnClicked">
@@ -182,6 +182,7 @@ export default {
   data() {
     return {
       tweetId: this.$route.params.id,
+      userAvatar: this.$store.state.currentUser.avatar,
       tweet: {
         UserId: -1,
         user: {

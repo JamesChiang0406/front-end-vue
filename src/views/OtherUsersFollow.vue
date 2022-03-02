@@ -114,7 +114,7 @@
     </div>
 
     <div class="tweeting-area" v-show="isTweetBtnClicked">
-      <TweetingForm v-on:closeArea="closeTweetArea" />
+      <TweetingForm v-on:closeArea="closeTweetArea" :user-avatar="userAvatar" />
     </div>
   </div>
 </template>
@@ -136,6 +136,7 @@ export default {
   data() {
     return {
       userId: this.$route.params.id,
+      userAvatar: this.$store.state.currentUser.avatar,
       followData: [],
       followersClicked: true,
       followingsClicked: false,
