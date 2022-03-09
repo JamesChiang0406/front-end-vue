@@ -56,6 +56,7 @@
             v-model="email"
             name="email"
             id="email"
+            pattern="^\w+((-\w)|(\.\w))*@[A-Za-z0-9]+\.[A-Za-z]+$"
             required
           />
         </div>
@@ -69,8 +70,10 @@
             v-model="password"
             name="password"
             id="password"
-            required
             autocomplete="off"
+            pattern="[0-9]{8}"
+            placeholder="請輸入由8位數字組合的密碼"
+            required
           />
         </div>
 
@@ -83,8 +86,10 @@
             v-model="passwordCheck"
             name="passwordCheck"
             id="passwordCheck"
-            required
             autocomplete="off"
+            pattern="[0-9]{8}"
+            placeholder="重新確認密碼"
+            required
           />
         </div>
 
@@ -167,6 +172,17 @@ export default {
             title: "尚有欄位未填，請重新確認！",
           });
         }
+        if (
+          !this.password.match(/[0-9]{8}/) ||
+          !this.passwordCheck.match(/[0-9]{8}/) ||
+          !this.email.match(/^\w+((-\w)|(\.\w))*@[A-Za-z0-9]+\.[A-Za-z]+$/)
+        ) {
+          return Toast.fire({
+            icon: "error",
+            title: "格式錯誤，請重新確認！",
+          });
+        }
+        console.log("pass");
         this.isSetting = true;
 
         const userId = this.id;
@@ -228,6 +244,9 @@ input {
 }
 input:focus {
   box-shadow: none;
+}
+input:focus::-webkit-input-placeholder {
+  color: transparent;
 }
 
 .submit-btn {

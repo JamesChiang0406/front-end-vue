@@ -46,12 +46,13 @@
                 v-model="email"
                 name="email"
                 id="email"
+                pattern="^\w+((-\w)|(\.\w))*@[A-Za-z0-9]+\.[A-Za-z]+$"
               />
             </div>
 
             <!-- password -->
             <div class="form-label-group mb-4">
-              <label for="password">重新設定密碼</label>
+              <label for="password">設定密碼</label>
               <input
                 type="password"
                 class="form-control mt-3"
@@ -59,7 +60,9 @@
                 name="password"
                 id="password"
                 required
-                autocomplete=""
+                autocomplete="off"
+                pattern="[0-9]{8}"
+                placeholder="請輸入由8位數字組合的密碼"
               />
             </div>
 
@@ -73,7 +76,9 @@
                 name="passwordCheck"
                 id="passwordCheck"
                 required
-                autocomplete=""
+                autocomplete="off"
+                pattern="[0-9]{8}"
+                placeholder="重新確認密碼"
               />
             </div>
 
@@ -159,6 +164,16 @@ export default {
           return Toast.fire({
             icon: "error",
             title: "尚有欄位未填，請重新確認！",
+          });
+        }
+        if (
+          !this.password.match(/[0-9]{8}/) ||
+          !this.passwordCheck.match(/[0-9]{8}/) ||
+          !this.email.match(/^\w+((-\w)|(\.\w))*@[A-Za-z0-9]+\.[A-Za-z]+$/)
+        ) {
+          return Toast.fire({
+            icon: "error",
+            title: "格式錯誤，請重新確認！",
           });
         }
         this.isSetting = true;
@@ -271,11 +286,18 @@ input {
   border: none;
   background-color: #f5f8fa;
   height: 50%;
+  padding-left: 10px;
+}
+input::-webkit-input-placeholder {
+  font-size: 16px;
 }
 
 input:focus {
   background-color: #f5f8fa;
   box-shadow: none;
+}
+input:focus::-webkit-input-placeholder {
+  color: transparent;
 }
 
 .title {
