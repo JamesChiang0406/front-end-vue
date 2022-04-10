@@ -419,8 +419,6 @@ export default {
 
       this.isReplyBtnClicked = false;
     },
-
-    // 完成刪除回應的功能
   },
 };
 </script>

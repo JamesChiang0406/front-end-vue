@@ -12,6 +12,7 @@
       >
         <i class="fas fa-circle-notch fa-spin"></i>
       </div>
+
       <div
         class="user-self col-6 p-0 border"
         :class="{ dataReading: isProcessing }"
@@ -28,18 +29,33 @@
 
         <div class="user-profile position-relative">
           <div class="picture-area">
-            <img
-              :src="user.cover"
-              alt="user-pic"
-              style="
-                width: 100%;
-                height: 250px;
-                background-size: cover;
-                background-position: center;
-              "
-            />
+            <div class="cover-area">
+              <div
+                class="edit-cover position-absolute"
+                @click.stop.prevent="openImgSettingArea('cover')"
+              >
+                <i class="fas fa-camera"></i>
+              </div>
+
+              <img
+                :src="user.cover"
+                alt="user-pic"
+                style="
+                  width: 100%;
+                  height: 250px;
+                  background-size: cover;
+                  background-position: center;
+                "
+              />
+            </div>
 
             <div class="edit-area d-flex justify-content-between px-3">
+              <div
+                class="edit-avatar position-absolute"
+                @click.stop.prevent="openImgSettingArea('avatar')"
+              >
+                <i class="fas fa-camera"></i>
+              </div>
               <img :src="user.avatar" alt="user-pic" class="user-pic" />
               <button
                 class="btn edit-btn"
@@ -260,6 +276,14 @@
         v-on:closeSetAndUp="closeSetAndUp"
       />
     </div>
+
+    <div class="imgSetting-area" v-show="isImgSettingBtnClicked">
+      <ImgSettingForm
+        v-on:closeArea="closeImgSettingArea"
+        v-on:updateImg="updateImg"
+        :edit-where="editWhere"
+      />
+    </div>
   </div>
 </template>
 
@@ -270,6 +294,7 @@ import ProfileEditPage from "../components/ProfileEditPage";
 import TweetingForm from "../components/TweetingForm.vue";
 import ReplyingForm from "../components/ReplyingForm.vue";
 import SettingForm from "../components/SettingForm.vue";
+import ImgSettingForm from "../components/ImgSettingForm.vue";
 import { Toast } from "../utils/helpers";
 import userAPI from "../apis/users";
 import tweetAPI from "../apis/tweet";
@@ -283,6 +308,7 @@ export default {
     TweetingForm,
     ReplyingForm,
     SettingForm,
+    ImgSettingForm,
   },
 
   data() {
@@ -298,6 +324,8 @@ export default {
       isTweetBtnClicked: false,
       isReplyBtnClicked: false,
       isSettingBtnClicked: false,
+      isImgSettingBtnClicked: false,
+      editWhere: "",
       replyTweet: {
         userId: -1,
         tweetId: -1,
@@ -568,6 +596,21 @@ export default {
       this.isSettingBtnClicked = false;
       this.fetchUser({ userId: this.id });
     },
+
+    openImgSettingArea(where) {
+      this.editWhere = where;
+      this.isImgSettingBtnClicked = true;
+    },
+
+    closeImgSettingArea() {
+      this.isImgSettingBtnClicked = false;
+    },
+
+    updateImg() {
+      this.isImgSettingBtnClicked = false;
+      this.fetchUser({ userId: this.id });
+      this.editWhere = "";
+    },
   },
 };
 </script>
@@ -593,6 +636,16 @@ body {
   position: absolute;
   top: 25px;
 }
+.edit-cover {
+  top: 40%;
+  left: 50%;
+  color: transparent;
+}
+.edit-cover:hover {
+  cursor: pointer;
+  display: block;
+  color: crimson;
+}
 
 .edit-area {
   position: absolute;
@@ -605,6 +658,16 @@ body {
   border: 3px white solid;
   border-radius: 100%;
   background-color: white;
+}
+.edit-avatar {
+  top: 30%;
+  left: 10%;
+  color: transparent;
+}
+.edit-avatar:hover {
+  cursor: pointer;
+  display: block;
+  color: crimson;
 }
 .edit-btn {
   padding: 2px;
@@ -726,7 +789,8 @@ a,
 }
 .tweeting-area,
 .replying-area,
-.setting-area {
+.setting-area,
+.imgSetting-area {
   position: fixed;
   z-index: 999;
   margin: 0;

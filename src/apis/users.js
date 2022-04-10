@@ -35,5 +35,13 @@ export default {
 
   getFollowings({ userId }) {
     return apiHelper.get(`/followings/${userId}`)
+  },
+
+  putAvatarImg({ formData }) {
+    return apiHelper.put('/users/image/avatar', formData)
+  },
+
+  putCoverImg({ formData }) {
+    return apiHelper.put('/users/image/cover', formData)
   }
 }

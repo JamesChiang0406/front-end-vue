@@ -182,7 +182,6 @@ export default {
             title: "格式錯誤，請重新確認！",
           });
         }
-        console.log("pass");
         this.isSetting = true;
 
         const userId = this.id;
