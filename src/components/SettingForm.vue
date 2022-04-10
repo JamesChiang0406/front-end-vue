@@ -61,6 +61,18 @@
           />
         </div>
 
+        <div class="form-label-group d-flex align-items-center mt-4">
+          <label for="name">自我介紹</label>
+          <input
+            type="text"
+            class="form-control"
+            v-model="introduction"
+            name="introduction"
+            id="introduction"
+            required
+          />
+        </div>
+
         <!-- password -->
         <div class="form-label-group d-flex align-items-center mt-4">
           <label for="password">設定密碼</label>
@@ -105,7 +117,7 @@
         >
           <div class="btn-area">
             <button
-              class="btn submit-btn text-white mt-4 ml-3"
+              class="btn submit-btn text-white mt-2 ml-3"
               type="submit"
               :disabled="isSetting"
             >
@@ -129,6 +141,7 @@ export default {
       account: "",
       name: "",
       email: "",
+      introduction: "",
       password: "",
       passwordCheck: "",
       isSetting: false,
@@ -156,6 +169,7 @@ export default {
         this.account = data.account;
         this.name = data.name;
         this.email = data.email;
+        this.introduction = data.introduction;
       } catch (error) {
         Toast.fire({
           icon: "error",
@@ -189,6 +203,7 @@ export default {
           account: this.account,
           name: this.name,
           email: this.email,
+          introduction: this.introduction,
           password: this.password,
           passwordCheck: this.passwordCheck,
         };
@@ -202,6 +217,9 @@ export default {
           icon: "success",
           title: "設定成功！",
         });
+
+        this.password = "";
+        this.passwordCheck = "";
         this.isSetting = false;
         this.$emit("closeSetAndUp");
       } catch (error) {
@@ -220,11 +238,10 @@ export default {
 .setting-form {
   background-color: white;
   width: 700px;
-  height: 540px;
   border: 2px #e9e9e9 solid;
   border-radius: 15px;
   margin-left: 325px;
-  margin-top: 80px;
+  margin-top: 25px;
 }
 
 .close-btn:hover {
