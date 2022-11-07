@@ -29,14 +29,19 @@
               style="width: 85%; padding-left: 5px"
             >
               <img
-                src="../assets/icon/Icon.png"
+                :src="userAvatar"
                 alt="avatar-img"
-                style="width: 40px; height: 40px; margin-top: 5px"
+                style="
+                  width: 40px;
+                  height: 40px;
+                  margin-top: 3px;
+                  border-radius: 50%;
+                "
               />
               <textarea
                 class="form-control"
                 placeholder="有什麼新鮮事?"
-                style="height: 125px; width: 90%"
+                style="height: 125px; width: 90%; padding: 10px"
                 v-model="newTweet"
                 name="newTweet"
               >
@@ -165,7 +170,17 @@
       </div>
 
       <div class="col-3 pr-0 pl-2">
-        <FollowWho />
+        <FollowWho v-on:chatArea="openChatArea" page-name="homePage" />
+      </div>
+
+      <div class="chatroom-area" v-if="chatNum.length">
+        <ChatRoom
+          v-for="chatUser in chatNum"
+          :key="chatUser.id"
+          :chatting-to="chatUser"
+          :class="chatUser.chatterName"
+          v-on:closeArea="closeChatArea"
+        />
       </div>
     </div>
 
@@ -192,6 +207,7 @@ import SideBar from "../components/SideBar";
 import FollowWho from "../components/FollowWho";
 import TweetingForm from "../components/TweetingForm";
 import ReplyingForm from "../components/ReplyingForm";
+import ChatRoom from "../components/ChatRoom.vue";
 import tweetAPI from "../apis/tweet";
 import { Toast } from "../utils/helpers";
 import moment from "moment";
@@ -217,6 +233,7 @@ export default {
           name: "",
         },
       },
+      chatNum: [],
     };
   },
 
@@ -230,6 +247,20 @@ export default {
     FollowWho,
     TweetingForm,
     ReplyingForm,
+    ChatRoom,
+  },
+
+  sockets: {
+    openOthersRoom(othersData) {
+      if (this.chatNum.some((item) => item.chatterId === othersData.id)) {
+        return;
+      } else {
+        this.chatNum.push({
+          chatterName: othersData.name,
+          chatterId: othersData.id,
+        });
+      }
+    },
   },
 
   methods: {
@@ -419,6 +450,35 @@ export default {
 
       this.isReplyBtnClicked = false;
     },
+
+    openChatArea(roomDetail) {
+      if (
+        this.chatNum.some(
+          (item) => item.chatterId === roomDetail.id && item.isOpening
+        )
+      ) {
+        return;
+      } else {
+        this.chatNum.push({
+          chatterName: roomDetail.name,
+          chatterId: roomDetail.id,
+          isOpening: true,
+        });
+
+        this.$socket.emit("chatAlert", {
+          id: this.$store.state.currentUser.id,
+          name: this.$store.state.currentUser.name,
+        });
+      }
+    },
+
+    closeChatArea(name) {
+      this.chatNum.forEach((item) => {
+        if (item.chatterName === name) {
+          item.isOpening = false;
+        }
+      });
+    },
   },
 };
 </script>
@@ -548,6 +608,14 @@ p {
   width: 100%;
   height: 100%;
   background: rgba(0, 0, 0, 0.5);
+}
+.chatroom-area {
+  z-index: 999;
+  position: fixed;
+  top: 50%;
+  right: 0;
+  display: flex;
+  min-width: 200px;
 }
 
 .follower-name:hover,

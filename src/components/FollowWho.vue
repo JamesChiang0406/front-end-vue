@@ -9,8 +9,8 @@
       v-for="user in showData"
       :key="user.id"
     >
-      <div class="follower-profile d-flex" style="width: 75%">
-        <div class="follower-pic" style="width: 20%">
+      <div class="follower-profile d-flex" style="width: 50%">
+        <div class="follower-pic mr-2" style="width: 20%">
           <router-link :to="{ name: 'other-user', params: { id: user.id } }">
             <img :src="user.avatar" alt="" />
           </router-link>
@@ -25,21 +25,30 @@
         </div>
       </div>
 
-      <div style="width: 25%">
+      <div style="width: 50%" class="d-flex">
         <button
-          class="btn following-btn"
+          class="btn following-btn mr-2"
           v-if="user.isFollowing"
           @click.stop.prevent="removeFollowing(user.id)"
         >
           跟隨中
         </button>
         <button
-          class="btn follow-btn"
+          class="btn follow-btn mr-2"
           v-else
           @click.stop.prevent="addFollowing(user.id)"
         >
           跟隨
         </button>
+
+        <div v-if="pageName">
+          <button
+            class="btn chat-btn"
+            @click.stop.prevent="chatToWho(user.name, user.id)"
+          >
+            聊天
+          </button>
+        </div>
       </div>
     </div>
 
@@ -68,6 +77,9 @@ export default {
       require: false,
     },
     removeWho: {
+      require: false,
+    },
+    pageName: {
       require: false,
     },
   },
@@ -186,6 +198,11 @@ export default {
         });
       }
     },
+
+    chatToWho(name, id) {
+      const roomDetail = { name, id };
+      this.$emit("chatArea", roomDetail);
+    },
   },
 };
 </script>
@@ -246,6 +263,16 @@ img {
   height: 100%;
   font-size: 0.8rem;
   padding: 5px 2px 2px 2px;
+}
+
+.chat-btn {
+  border-radius: 20px;
+  color: white;
+  background-color: #319ae0;
+  width: 50px;
+  height: 35px;
+  font-size: 0.9rem;
+  padding: 5px;
 }
 
 .show-more {

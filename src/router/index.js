@@ -4,21 +4,24 @@ import NotFound from '../views/NotFound.vue'
 import SignIn from '../views/SignIn.vue'
 import SignUp from '../views/SignUp.vue'
 import MainPage from '../views/MainPage.vue'
+import userAPI from '../apis/users'
 import store from '../store'
 
 Vue.use(VueRouter)
 
-const authIsAdmin = (to, from, next) => {
-  const currentUser = store.state.currentUser
-  if (currentUser && currentUser.role !== 'admin') {
+const authIsAdmin = async (to, from, next) => {
+  const { data } = await userAPI.getCurrentUser()
+
+  if (data.role !== 'admin') {
     next('/404')
     return
   }
   next()
 }
-const authIsUser = (to, from, next,) => {
-  const currentUser = store.state.currentUser
-  if (currentUser.role !== 'user') {
+const authIsUser = async (to, from, next,) => {
+  const { data } = await userAPI.getCurrentUser()
+
+  if (data.role !== 'user') {
     next('/404')
     return
   }

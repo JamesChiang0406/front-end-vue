@@ -19,6 +19,7 @@
           name="account"
           id="account"
           required
+          autofocus
         />
       </div>
 
