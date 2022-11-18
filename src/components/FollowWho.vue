@@ -9,7 +9,7 @@
       v-for="user in showData"
       :key="user.id"
     >
-      <div class="follower-profile d-flex" style="width: 50%">
+      <div class="follower-profile d-flex">
         <div class="follower-pic mr-2" style="width: 20%">
           <router-link :to="{ name: 'other-user', params: { id: user.id } }">
             <img :src="user.avatar" alt="" />
@@ -25,23 +25,23 @@
         </div>
       </div>
 
-      <div style="width: 50%" class="d-flex">
+      <div class="d-flex justify-content-end btns">
         <button
-          class="btn following-btn mr-2"
+          class="btn following-btn"
           v-if="user.isFollowing"
           @click.stop.prevent="removeFollowing(user.id)"
         >
           跟隨中
         </button>
         <button
-          class="btn follow-btn mr-2"
+          class="btn follow-btn"
           v-else
           @click.stop.prevent="addFollowing(user.id)"
         >
           跟隨
         </button>
 
-        <div v-if="pageName">
+        <div v-if="pageName" class="chatBtn-area">
           <button
             class="btn chat-btn"
             @click.stop.prevent="chatToWho(user.name, user.id)"
@@ -229,6 +229,10 @@ img {
   width: 40px;
   height: 40px;
 }
+
+.follower-profile {
+  width: 50%;
+}
 .name-account {
   text-align: start;
   position: relative;
@@ -245,24 +249,29 @@ img {
   font-size: 16px;
 }
 
+.btns {
+  width: 50%;
+}
 .follow-btn {
   border-radius: 20px;
   color: #ff6600;
   border-color: #ff6600;
-  width: 100%;
+  width: 50%;
   height: 100%;
   font-size: 0.9rem;
   padding: 5px 2px 2px 2px;
+  margin-right: 10px;
 }
 .following-btn {
   border-radius: 20px;
   color: white;
   background-color: #ff6600;
   border-color: #ff6600;
-  width: 100%;
+  width: 50%;
   height: 100%;
   font-size: 0.8rem;
   padding: 5px 2px 2px 2px;
+  margin-right: 10px;
 }
 
 .chat-btn {
@@ -288,5 +297,44 @@ img {
 
 .follower-pic:hover {
   opacity: 0.5;
+}
+
+@media screen and (max-width: 992px) {
+  .follower-profile {
+    width: 25%;
+  }
+  .name-account {
+    z-index: -999;
+  }
+
+  .btns {
+    width: 75%;
+  }
+  .follow-btn,
+  .following-btn {
+    margin: 0 5px;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .btns {
+    flex-direction: column;
+    align-items: center;
+    margin-left: 20px;
+  }
+  .follow-btn,
+  .following-btn {
+    width: 80%;
+    font-size: 10px;
+  }
+
+  .chatBtn-area {
+    width: 80%;
+  }
+  .chat-btn {
+    width: 100%;
+    height: 25px;
+    font-size: 10px;
+  }
 }
 </style>

@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <div class="row mt-2">
-      <div class="col-3 px-4 pt-2">
+      <div class="sidebar-area col-3 px-4 pt-1">
         <SideBar page-name="profile" v-on:openArea="openTweetArea" />
       </div>
 
@@ -245,7 +245,7 @@
         </div>
       </div>
 
-      <div class="col-3 pr-0 pl-2 pt-2">
+      <div class="col-3 pr-0 pl-2">
         <FollowWho />
       </div>
     </div>
@@ -620,7 +620,10 @@ body {
   z-index: 1;
   position: relative;
 }
-
+.container {
+  width: 100%;
+  padding: 0;
+}
 .dataReading {
   display: none;
 }
@@ -796,9 +799,91 @@ a,
   margin: 0;
   padding: 0;
   top: 0;
-  left: 0;
-  width: 100%;
+  left: -5%;
+  width: 200%;
   height: 100%;
   background: rgba(0, 0, 0, 0.5);
+}
+
+@media screen and (max-width: 992px) {
+  .tweeting-area {
+    width: 200%;
+    left: -10%;
+  }
+
+  .replying-area {
+    width: 200%;
+    left: -15%;
+  }
+
+  .setting-area,
+  .imgSetting-area {
+    width: 200%;
+    left: -20%;
+  }
+}
+
+@media screen and (max-width: 878px) {
+  .tweeting-area {
+    width: 200%;
+    left: -25%;
+  }
+
+  .replying-area {
+    width: 200%;
+    left: -30%;
+  }
+
+  .setting-area,
+  .imgSetting-area {
+    width: 200%;
+    left: -37%;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .edit-area {
+    top: 85%;
+  }
+
+  .description {
+    border-bottom: 2px solid #dee2e6;
+  }
+
+  .sidebar-area,
+  .changeArea {
+    font-size: 10px;
+  }
+
+  .tweeting-area {
+    width: 200%;
+    left: -40%;
+  }
+
+  .replying-area {
+    width: 200%;
+    left: -45%;
+  }
+
+  .setting-area {
+    width: 200%;
+    left: -40%;
+  }
+  .imgSetting-area {
+    width: 200%;
+    left: -45%;
+  }
+}
+
+@media screen and (max-width: 665px) {
+  .tweeting-area {
+    width: 200%;
+    left: -55%;
+  }
+
+  .replying-area {
+    width: 200%;
+    left: -55%;
+  }
 }
 </style>

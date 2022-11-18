@@ -695,4 +695,65 @@ a,
 .avatar:hover {
   opacity: 0.5;
 }
+
+@media screen and (max-width: 992px) {
+  .tweeting-area {
+    width: 200%;
+    left: -10%;
+  }
+
+  .replying-area {
+    width: 200%;
+    left: -15%;
+  }
+}
+
+@media screen and (max-width: 878px) {
+  .tweeting-area {
+    width: 200%;
+    left: -25%;
+  }
+
+  .replying-area {
+    width: 200%;
+    left: -30%;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .edit-area {
+    top: 85%;
+  }
+
+  .description {
+    border-bottom: 2px solid #dee2e6;
+  }
+
+  .sidebar-area,
+  .changeArea {
+    font-size: 10px;
+  }
+
+  .tweeting-area {
+    width: 200%;
+    left: -40%;
+  }
+
+  .replying-area {
+    width: 200%;
+    left: -45%;
+  }
+}
+
+@media screen and (max-width: 665px) {
+  .tweeting-area {
+    width: 200%;
+    left: -55%;
+  }
+
+  .replying-area {
+    width: 200%;
+    left: -55%;
+  }
+}
 </style>

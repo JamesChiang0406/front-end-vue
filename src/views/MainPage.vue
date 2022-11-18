@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <div class="row mt-2">
-      <div class="col-3 px-4 pt-1">
+      <div class="sidebar-area col-3 px-4 pt-1">
         <SideBar page-name="homePage" v-on:openArea="openTweetArea" />
       </div>
 
@@ -315,6 +315,7 @@ export default {
           icon: "error",
           title: "無法發布此推文，請稍後再試！",
         });
+        this.isLoading = false;
       }
     },
 
@@ -481,7 +482,7 @@ export default {
     },
   },
 };
-</script>
+</script> 
 
 <style scoped>
 body {
@@ -631,5 +632,62 @@ p {
 
 .image:hover {
   opacity: 0.5;
+}
+
+@media screen and (max-width: 992px) {
+  .tweeting-area {
+    width: 200%;
+    left: -10%;
+  }
+
+  .replying-area {
+    width: 200%;
+    left: -15%;
+  }
+}
+
+@media screen and (max-width: 878px) {
+  .tweeting-area {
+    width: 200%;
+    left: -25%;
+  }
+
+  .replying-area {
+    width: 200%;
+    left: -30%;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .sidebar-area {
+    font-size: 10px;
+  }
+
+  .tweet-form {
+    padding: 5px;
+    padding-bottom: 0;
+  }
+
+  .tweeting-area {
+    width: 200%;
+    left: -40%;
+  }
+
+  .replying-area {
+    width: 200%;
+    left: -45%;
+  }
+}
+
+@media screen and (max-width: 665px) {
+  .tweeting-area {
+    width: 200%;
+    left: -55%;
+  }
+
+  .replying-area {
+    width: 200%;
+    left: -55%;
+  }
 }
 </style>

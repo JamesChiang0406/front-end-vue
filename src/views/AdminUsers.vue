@@ -1,7 +1,7 @@
 <template>
   <div class="container mr-0">
     <div class="row">
-      <div class="col-2 p-0" style="height: 350px">
+      <div class="col-2 p-0 sidebar-area" style="height: 350px">
         <AdminSideBar page-name="userPage" />
       </div>
 
@@ -173,5 +173,17 @@ span {
   border: 3px white solid;
   background-color: white;
   border-radius: 50%;
+}
+
+@media screen and (max-width: 992px) {
+  .sidebar-area {
+    font-size: 14px;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .sidebar-area {
+    font-size: 10px;
+  }
 }
 </style>

@@ -1,12 +1,12 @@
 <template>
   <div class="container row">
-    <div class="d-flex col-12" style="left: 15%">
-      <div class="sidebar-area">
+    <div class="row col-12" style="left: 20%">
+      <div class="sidebar-area col-3 px-4 pt-3">
         <SideBar page-name="setting" v-on:openArea="openTweetArea" />
       </div>
 
-      <div class="setting-area">
-        <div class="title px-3">帳戶設定</div>
+      <div class="setting-area col-9 p-0">
+        <div class="title px-3 pt-1">帳戶設定</div>
 
         <div class="fa-3x" v-show="isProcessing">
           <i class="fas fa-circle-notch fa-spin"></i>
@@ -227,7 +227,6 @@ body {
 
 .container {
   height: 100vh;
-  margin: 0;
   padding: 0;
 }
 
@@ -250,6 +249,9 @@ body {
 .setting-area {
   width: 100%;
   border-left: 2px #e9e9e9 solid;
+}
+.btn-wrapper {
+  width: 100px;
 }
 
 .dataReading {
@@ -313,5 +315,24 @@ label {
   margin: 5px 0 10px 10px;
   font-size: 15px;
   color: rgb(92, 94, 134);
+}
+
+@media screen and (max-width: 992px) {
+  .sidebar-area {
+    max-width: 30%;
+    font-size: 15px;
+  }
+
+  .setting-area {
+    max-width: 70%;
+    border: 2px solid #e9e9e9;
+  }
+  .btn-wrapper {
+    max-width: 100%;
+  }
+
+  .form-label-group {
+    max-width: 100%;
+  }
 }
 </style>
