@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <div class="row">
-      <div class="col-3 px-4 pt-2">
+      <div class="sidebar-area col-3 px-4 pt-2">
         <SideBar v-on:openArea="openTweetArea" />
       </div>
 

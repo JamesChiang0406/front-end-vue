@@ -233,7 +233,7 @@ body {
 .tweeting-area {
   position: fixed;
   z-index: 999;
-  width: 100%;
+  width: 200%;
   height: 100%;
   background: rgba(0, 0, 0, 0.5);
 }
@@ -323,6 +323,11 @@ label {
     font-size: 15px;
   }
 
+  .tweeting-area {
+    width: 200%;
+    left: -10%;
+  }
+
   .setting-area {
     max-width: 70%;
     border: 2px solid #e9e9e9;
@@ -333,6 +338,27 @@ label {
 
   .form-label-group {
     max-width: 100%;
+  }
+}
+
+@media screen and (max-width: 878px) {
+  .tweeting-area {
+    width: 200%;
+    left: -20%;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .tweeting-area {
+    width: 200%;
+    left: -35%;
+  }
+}
+
+@media screen and (max-width: 678px) {
+  .tweeting-area {
+    width: 200%;
+    left: -55%;
   }
 }
 </style>

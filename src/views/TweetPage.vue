@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <div class="row mt-2">
-      <div class="col-3 px-4">
+      <div class="sidebar-area col-3 px-4">
         <SideBar v-on:openArea="openTweetArea" />
       </div>
 
@@ -442,5 +442,66 @@ span {
 .numbers,
 .icon {
   border-bottom: 2px #e9e9e9 solid;
+}
+
+@media screen and (max-width: 992px) {
+  .tweeting-area {
+    width: 200%;
+    left: -10%;
+  }
+
+  .replying-area {
+    width: 200%;
+    left: -15%;
+  }
+
+  .sidebar-area {
+    font-size: 15px;
+  }
+}
+
+@media screen and (max-width: 878px) {
+  .tweeting-area {
+    width: 200%;
+    left: -25%;
+  }
+
+  .replying-area {
+    width: 200%;
+    left: -30%;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .sidebar-area {
+    font-size: 10px;
+  }
+
+  .tweet-form {
+    padding: 5px;
+    padding-bottom: 0;
+  }
+
+  .tweeting-area {
+    width: 200%;
+    left: -40%;
+  }
+
+  .replying-area {
+    width: 200%;
+    left: -45%;
+  }
+}
+
+@media screen and (max-width: 665px) {
+  .tweeting-area {
+    width: 200%;
+    left: -55%;
+  }
+
+  .replying-area {
+    width: 200%;
+    left: -55%;
+  }
 }
 </style>
