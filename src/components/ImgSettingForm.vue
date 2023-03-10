@@ -1,14 +1,7 @@
 <template>
   <div class="setting-form border">
     <div
-      class="
-        cancel-area
-        px-3
-        d-flex
-        justify-content-start
-        align-items-center
-        p-2
-      "
+      class="cancel-area px-3 d-flex justify-content-start align-items-center p-2"
       style="color: #ff6600"
       @click.stop.prevent="closeArea"
     >
