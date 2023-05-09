@@ -340,6 +340,7 @@ export default {
           this.tweet.tweetReplies = this.tweet.tweetReplies.filter((reply) => {
             return reply.id !== replyId;
           });
+          this.tweet.repliedCount -= 1;
         } else {
           return;
         }
